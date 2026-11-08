@@ -56,10 +56,12 @@ The dsh plugin ships as `@elierncn/aegisharness-dsh`, published by
 git tag v1.0.0 && git push origin v1.0.0
 ```
 
-The workflow needs the repository secret `NPM_TOKEN` (Automation or Granular token with
-read+write on the `@elierncn` scope). It runs the bundle self-check and
-`scripts/check_release.py` before publishing, refuses to continue when the tag and
-`package.json` disagree, and verifies the version is resolvable from the registry afterwards.
+The workflow prefers OIDC trusted publishing (no secret; configure a trusted publisher on the
+package's npm settings page) and falls back to the repository secret `NPM_TOKEN` while the
+package does not exist on npm yet — such a token must have "Bypass two-factor authentication"
+enabled, or CI fails with `EOTP`. It runs the bundle self-check and `scripts/check_release.py`
+before publishing, refuses to continue when the tag and `package.json` disagree, and verifies
+the version is resolvable from the registry afterwards.
 
 ## PR checklist
 
@@ -77,4 +79,4 @@ Unless explicitly stated otherwise, contributions intentionally submitted for in
 
 使用 Python 3.10+，按上面的命令准备环境并运行相关组件测试。工作流正文放在 `workflows/`，不要复制回 `commands/`；平台三个后端保持模块边界。示例与测试使用合成数据，不提交凭据、私有对话或运行产物。贡献按 Apache-2.0 提交，并遵守社区行为准则。
 
-发布 dsh bundle 时，先改 `aegisharness/package.json` 的 `version` 并提交，再推同名 `v*` tag，由 `.github/workflows/publish-npm.yml` 发布；该工作流需要仓库 Secret `NPM_TOKEN`，并在发布前跑一遍 bundle 自检与 `scripts/check_release.py`。
+发布 dsh bundle 时，先改 `aegisharness/package.json` 的 `version` 并提交，再推同名 `v*` tag，由 `.github/workflows/publish-npm.yml` 发布。工作流优先走 OIDC 可信发布（无需 Secret，需在 npm 包设置页配好 Trusted Publisher）；包还没上 npm 时退回用仓库 Secret `NPM_TOKEN`，该 token 必须勾选「Bypass two-factor authentication」，否则 CI 会报 `EOTP`。

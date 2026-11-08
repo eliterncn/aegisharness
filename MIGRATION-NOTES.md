@@ -124,11 +124,12 @@ python3 host_e2e.py --all
       需在装了对应产品并完成登录的机器上跑一遍 `/aegis:init` → `propose` → `apply` → `archive`，
       然后 `python3 scripts/host_e2e.py --host <id> --record --promote` 升为 `stable`。
 - [ ] 发布 npm 包。两条路径任选：
-      ① 本机 `cd aegisharness && npm login && npm publish --access public`；
-      ② 配好仓库 Secret `NPM_TOKEN` 后推 `v*` tag，由
-      `.github/workflows/publish-npm.yml` 自动发布（见第 7 节）。
-      **阻塞原因**：本机 `~/.npmrc` 里的 token 已失效（`GET /-/whoami` 返回 401），
-      需要人工登录或配置 Secret。
+      ① 本机 `cd aegisharness && npm publish --access public --otp=<验证码>`
+      （账号开了 2FA，交互发布必须带一次性验证码）；
+      ② 推 `v*` tag，由 `.github/workflows/publish-npm.yml` 自动发布：首版用仓库 Secret
+      `NPM_TOKEN`（需勾 `Bypass 2FA`），发成功后配 Trusted Publisher 切到 OIDC 并删掉 Secret。
+      **当前状态**：本机 `~/.npmrc` 里的 40 字符 legacy token 已被 npm 全面下线（`whoami` 401）；
+      新账号 `elitern` 的 granular token 权限正常但**未勾 `Bypass 2FA`**，`npm publish` 报 `EOTP`。
 
 ## 5. 日常使用
 
@@ -216,18 +217,34 @@ npm publish --access public
 
 ### 用 GitHub Actions 发布（推荐，本机不必登录 npm）
 
-`.github/workflows/publish-npm.yml` 把上面那串命令搬到了 CI：
+`.github/workflows/publish-npm.yml` 把上面那串命令搬到了 CI，**两种鉴权自动切换**：
+
+- **OIDC 可信发布（首选，不需要任何 Secret）**：npm 通过 OIDC 校验「这次发布确实来自
+  本仓库的这个 workflow」，签发短期凭据。需要 npm CLI ≥ 11.5.1、GitHub 托管 runner、
+  public 仓库，以及在 npm 包设置页配好的 Trusted Publisher。
+- **`NPM_TOKEN`（首版引导用）**：包还不存在于 npm 上时无法配置 Trusted Publisher，
+  这时用 granular token 发首版。**必须勾选 `Bypass two-factor authentication`**，
+  否则 CI 里会报 `EOTP`（CI 没法输入动态验证码）。
+
+其他要点：
 
 - **触发**：推 `v*` tag（如 `v1.0.0`），或在 Actions 页手动 Run 并填 `version`；
-- **前置**：仓库 Secret `NPM_TOKEN`（Settings → Secrets and variables → Actions）。
-  用 npm 的 Automation token 或 Granular token，对 `@elierncn` scope 至少 read+write；
-  缺失时工作流第一步就报错退出，不会跑半截。
 - **发布前门禁**：`node tests/dsh-plugin.test.mjs` + `python3 scripts/check_release.py`，
-  任一失败即中止；tag 与 `aegisharness/package.json` 的 `version` 不一致也直接失败。
-- **provenance**：`npm publish --provenance`，npm 页面会链回本次 commit（需要 `id-token: write`
-  与 public 仓库，两者都满足）。
+  任一失败即中止；tag 与 `aegisharness/package.json` 的 `version` 不一致也直接失败；
+- **provenance**：`npm publish --provenance`，npm 页面会链回本次 commit；
 - **发布后自检**：轮询 `npm view @elierncn/aegisharness-dsh@<version>` 直到 registry 可解析，
-  避免「发布了但装不上」。
+  避免「发布了但装不上」；
+- **不要给 `setup-node` 加 `registry-url`**：它会写一个 `_authToken` 为空的 `.npmrc`，
+  空凭据会挡住 OIDC 发布。`check_release.py` 的 CI 检查会拦这种写法。
+
+从 token 切到 OIDC 的顺序（首版发布成功后）：
+
+1. 打开 `https://www.npmjs.com/package/@elierncn/aegisharness-dsh` → Settings →
+   Trusted Publisher → Add → **GitHub Actions**；
+2. 填 `elierncn` / `aegisharness` / `publish-npm.yml`（只填文件名，带 `.yml`）；
+3. **Allowed actions 里必须勾上 `npm publish`**——新建配置默认只允许 stage publish，
+   不勾就只会把版本暂存，不会真正发布；
+4. 回仓库删掉 `NPM_TOKEN` Secret，之后打 tag 走纯 OIDC。
 
 发一版：
 

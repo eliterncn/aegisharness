@@ -2,15 +2,25 @@ name: publish-npm
 
 # Publishes the dsh bundle (aegisharness/) to npm.
 #
+# Two auth modes, picked automatically at runtime:
+#
+#   OIDC trusted publishing (preferred, no secret)
+#     npm proves this exact workflow's identity to the registry with a
+#     short-lived OIDC token. Needs npm CLI >= 11.5.1, a GitHub-hosted runner,
+#     and a trusted publisher configured on the package's npm settings page.
+#
+#   NPM_TOKEN (bootstrap fallback)
+#     Used while the package does not exist on npm yet -- a trusted publisher
+#     can only be configured for an existing package -- or if you prefer a token.
+#     Token must be a Granular token with "Bypass two-factor authentication"
+#     enabled, otherwise the publish fails with EOTP in CI.
+#
 # Triggers
 #   - push a tag like v1.0.0 -> publishes aegisharness/package.json's version
-#   - manual run           -> uses the `version` input, must match package.json
+#   - manual run             -> uses the `version` input, must match package.json
 #
-# Required repository secret: NPM_TOKEN (an npm Automation/Granular token with
-# read+write on the @elierncn scope). Without it the job fails fast.
-#
-# Provenance is enabled, so the npm page links the published tarball back to
-# this exact commit: that needs `id-token: write` below and a public repo.
+# Do NOT set `registry-url` on setup-node: it writes an .npmrc containing an
+# empty _authToken, and that empty credential blocks OIDC publishing.
 
 on:
   push:
@@ -45,7 +55,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22.22.2"
-          registry-url: "https://registry.npmjs.org"
+
+      - name: Prepare npm CLI
+        run: |
+          set -euo pipefail
+          echo "npm before: $(npm --version)"
+          # Trusted publishing needs npm >= 11.5.1; harmless in token mode too.
+          npm install -g 'npm@^11.5.1' >/dev/null
+          echo "npm after:  $(npm --version)"
 
       - name: Resolve expected version
         id: version
@@ -68,15 +85,22 @@ jobs:
           fi
           echo "version=$actual" >> "$GITHUB_OUTPUT"
 
-      - name: Require NPM_TOKEN
+      - name: Choose auth mode
+        id: auth
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if [ -z "${NODE_AUTH_TOKEN}" ]; then
-            echo "::error::secret NPM_TOKEN is missing. Add it in Settings > Secrets and variables > Actions."
-            exit 1
+          set -euo pipefail
+          if [ -n "${NPM_TOKEN:-}" ]; then
+            # Keep the secret out of the file: npm expands ${NODE_AUTH_TOKEN}.
+            printf '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}\n' > "$HOME/.npmrc"
+            chmod 600 "$HOME/.npmrc"
+            echo "mode=token" >> "$GITHUB_OUTPUT"
+            echo "auth mode: NPM_TOKEN (bootstrap). Remember to delete the secret once OIDC works."
+          else
+            echo "mode=oidc" >> "$GITHUB_OUTPUT"
+            echo "auth mode: OIDC trusted publishing."
           fi
-          echo "NPM_TOKEN present (length ${#NODE_AUTH_TOKEN})"
 
       - name: Offline bundle self-check
         run: node tests/dsh-plugin.test.mjs
@@ -89,8 +113,11 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
+          if [ "${{ steps.auth.outputs.mode }}" = "oidc" ]; then
+            unset NODE_AUTH_TOKEN
+          fi
           npm publish --access public --provenance
-          echo "published @elierncn/aegisharness-dsh@${{ steps.version.outputs.version }}"
+          echo "published @elierncn/aegisharness-dsh@${{ steps.version.outputs.version }} via ${{ steps.auth.outputs.mode }}"
 
       - name: Verify it is installable
         env:
@@ -114,11 +141,13 @@ jobs:
         working-directory: .
         env:
           VERSION: ${{ steps.version.outputs.version }}
+          AUTH_MODE: ${{ steps.auth.outputs.mode }}
         run: |
           {
             echo "### publish-npm"
             echo ""
             echo "- package: \`@elierncn/aegisharness-dsh@${VERSION}\`"
             echo "- trigger: \`${{ github.event_name }}\` on \`${{ github.ref_name }}\`"
+            echo "- auth: \`${AUTH_MODE:-unknown}\`"
             echo "- install with: \`dsh plugin --profile web add @elierncn/aegisharness-dsh\`"
           } >> "$GITHUB_STEP_SUMMARY"

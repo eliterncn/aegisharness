@@ -226,6 +226,10 @@ def ci_workflows() -> None:
             raise ValueError(f"{name} does not set publishConfig.access=public")
         if not any("NPM_TOKEN" in text for text in texts.values()):
             raise ValueError("workflows never read NPM_TOKEN")
+        if not any("id-token: write" in text for text in texts.values()):
+            raise ValueError("no workflow grants id-token: write; OIDC publishing would fail")
+        if any(re.search(r"^\s*registry-url\s*:", text, re.MULTILINE) for text in texts.values()):
+            raise ValueError("a workflow sets setup-node registry-url, which blocks OIDC publishing")
         published.append(name)
     if published:
         print(f"       workflows: {', '.join(sorted(texts))} -> {', '.join(published)}")
