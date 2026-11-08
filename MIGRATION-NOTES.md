@@ -88,6 +88,7 @@ python3 host_e2e.py --all
 | 分发清单 | PASS |
 | 原生插件 bundle（`dsh.bundle.patch` / `exports` / `files` 覆盖） | PASS（`@elierncn/aegisharness-dsh@1.0.0`） |
 | 宿主 E2E 证据（`support.evidence` 一致性） | PASS（两个 stable 宿主） |
+| CI 发布工作流（工作流引用了 bundle 名与 `NPM_TOKEN`、`publishConfig.access=public`） | PASS（`publish-npm.yml`） |
 | 品牌残留（排除法律署名文件） | PASS |
 | 文档链接 | PASS |
 | `host_runtime_cli.py list` | `["claude-code","codex","deepseek-dsh","minimax","qoder","workbuddy"]` |
@@ -122,9 +123,12 @@ python3 host_e2e.py --all
 - [ ] 真实产品会话内的模型执行抽样（minimax / workbuddy / qoder / deepseek-dsh）：
       需在装了对应产品并完成登录的机器上跑一遍 `/aegis:init` → `propose` → `apply` → `archive`，
       然后 `python3 scripts/host_e2e.py --host <id> --record --promote` 升为 `stable`。
-- [ ] 发布 npm 包（需要 `npm login`）：`cd aegisharness && npm publish`。
+- [ ] 发布 npm 包。两条路径任选：
+      ① 本机 `cd aegisharness && npm login && npm publish --access public`；
+      ② 配好仓库 Secret `NPM_TOKEN` 后推 `v*` tag，由
+      `.github/workflows/publish-npm.yml` 自动发布（见第 7 节）。
       **阻塞原因**：本机 `~/.npmrc` 里的 token 已失效（`GET /-/whoami` 返回 401），
-      需人工登录后重试。
+      需要人工登录或配置 Secret。
 
 ## 5. 日常使用
 
@@ -209,6 +213,29 @@ npm publish --access public
 ```
 
 `--access public` 对 scoped 包是必需的，否则默认按私有包发布（需要付费槽位）。
+
+### 用 GitHub Actions 发布（推荐，本机不必登录 npm）
+
+`.github/workflows/publish-npm.yml` 把上面那串命令搬到了 CI：
+
+- **触发**：推 `v*` tag（如 `v1.0.0`），或在 Actions 页手动 Run 并填 `version`；
+- **前置**：仓库 Secret `NPM_TOKEN`（Settings → Secrets and variables → Actions）。
+  用 npm 的 Automation token 或 Granular token，对 `@elierncn` scope 至少 read+write；
+  缺失时工作流第一步就报错退出，不会跑半截。
+- **发布前门禁**：`node tests/dsh-plugin.test.mjs` + `python3 scripts/check_release.py`，
+  任一失败即中止；tag 与 `aegisharness/package.json` 的 `version` 不一致也直接失败。
+- **provenance**：`npm publish --provenance`，npm 页面会链回本次 commit（需要 `id-token: write`
+  与 public 仓库，两者都满足）。
+- **发布后自检**：轮询 `npm view @elierncn/aegisharness-dsh@<version>` 直到 registry 可解析，
+  避免「发布了但装不上」。
+
+发一版：
+
+```bash
+# 先改 aegisharness/package.json 的 version，提交后打同名 tag
+git tag v1.0.0 && git push origin v1.0.0
+```
+
 发布后安装命令对外可用：
 
 ```bash

@@ -46,6 +46,21 @@ To rebuild the platform stylesheet, use Node.js and run from `aegisharness-platf
 npx --yes tailwindcss@3.4.17 -c tailwind.config.js -i web_ui/assets/tailwind.css -o web_ui/static/css/tailwind.css --minify
 ```
 
+## Releasing the npm bundle
+
+The dsh plugin ships as `@elierncn/aegisharness-dsh`, published by
+[`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml). Bump `version` in
+`aegisharness/package.json`, commit, then push a matching tag:
+
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
+The workflow needs the repository secret `NPM_TOKEN` (Automation or Granular token with
+read+write on the `@elierncn` scope). It runs the bundle self-check and
+`scripts/check_release.py` before publishing, refuses to continue when the tag and
+`package.json` disagree, and verifies the version is resolvable from the registry afterwards.
+
 ## PR checklist
 
 - Explain the user-visible problem and resulting behavior.
@@ -61,3 +76,5 @@ Unless explicitly stated otherwise, contributions intentionally submitted for in
 欢迎通过 GitHub Issue 提交问题、通过 PR 改进代码和文档；无需先部署平台。较大行为变更先说明问题、验收标准和兼容性影响。PR 面向仓库默认分支，保持单一目的，列出实际执行的验证命令和结果，并由维护者评审。
 
 使用 Python 3.10+，按上面的命令准备环境并运行相关组件测试。工作流正文放在 `workflows/`，不要复制回 `commands/`；平台三个后端保持模块边界。示例与测试使用合成数据，不提交凭据、私有对话或运行产物。贡献按 Apache-2.0 提交，并遵守社区行为准则。
+
+发布 dsh bundle 时，先改 `aegisharness/package.json` 的 `version` 并提交，再推同名 `v*` tag，由 `.github/workflows/publish-npm.yml` 发布；该工作流需要仓库 Secret `NPM_TOKEN`，并在发布前跑一遍 bundle 自检与 `scripts/check_release.py`。

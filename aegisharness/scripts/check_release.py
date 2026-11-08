@@ -2,7 +2,8 @@
 """Release consistency checks that do not depend on temp directories.
 
 Validates JSON manifests, Python syntax, Host Kit contracts, command
-projections, distribution manifests, branding residue and documentation links.
+projections, distribution manifests, native plugin bundles, host E2E evidence,
+CI publish workflows, branding residue and documentation links.
 Run from anywhere:
 
     python3 scripts/check_release.py
@@ -142,39 +143,46 @@ def distribution_manifests() -> None:
                 raise ValueError(f"{manifest.host_id} repository-root manifest has no name")
 
 
-def native_bundles() -> None:
-    """Validate packages that a host installs as a native plugin bundle."""
+def native_bundle_packages() -> list[tuple[str, Path, dict]]:
+    """Resolve every package that some host installs as a native bundle."""
     registry = HostRegistry.discover(HOSTS_ROOT)
-    found = []
+    packages: list[tuple[str, Path, dict]] = []
     for manifest in registry.manifests():
         path = manifest.resolve_resource_adapter("distribution")
         payload = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(payload, dict):
             continue
-        bundle = (payload.get("dsh") or {}).get("bundle")
-        if not isinstance(bundle, dict):
+        if not isinstance((payload.get("dsh") or {}).get("bundle"), dict):
             continue
+        packages.append((manifest.host_id, path.parent, payload))
+    return packages
+
+
+def native_bundles() -> None:
+    """Validate packages that a host installs as a native plugin bundle."""
+    found = []
+    for host_id, package_root, payload in native_bundle_packages():
+        bundle = payload["dsh"]["bundle"]
         patch_rel = bundle.get("patch")
         if not isinstance(patch_rel, str) or not patch_rel:
-            raise ValueError(f"{manifest.host_id} bundle patch is not declared")
-        package_root = path.parent
+            raise ValueError(f"{host_id} bundle patch is not declared")
         patch = package_root / patch_rel
         if not patch.is_file():
-            raise ValueError(f"{manifest.host_id} bundle patch missing: {patch_rel}")
+            raise ValueError(f"{host_id} bundle patch missing: {patch_rel}")
         patch_text = patch.read_text(encoding="utf-8")
         if payload.get("name") not in patch_text:
-            raise ValueError(f"{manifest.host_id} bundle patch does not mount {payload.get('name')}")
+            raise ValueError(f"{host_id} bundle patch does not mount {payload.get('name')}")
         exports = payload.get("exports") or {}
         if patch_rel.lstrip("./") not in {str(key).lstrip("./") for key in exports}:
-            raise ValueError(f"{manifest.host_id} bundle patch is not exported: {patch_rel}")
+            raise ValueError(f"{host_id} bundle patch is not exported: {patch_rel}")
         main = payload.get("main")
         if not isinstance(main, str) or not (package_root / main).is_file():
-            raise ValueError(f"{manifest.host_id} bundle main module missing: {main}")
+            raise ValueError(f"{host_id} bundle main module missing: {main}")
         files = [str(item).lstrip("./") for item in payload.get("files") or []]
         for required in (patch_rel.lstrip("./"), main.lstrip("./")):
             # A directory entry such as "lib" covers everything beneath it.
             if not any(required == entry or required.startswith(entry.rstrip("/") + "/") for entry in files):
-                raise ValueError(f"{manifest.host_id} bundle omits {required} from files")
+                raise ValueError(f"{host_id} bundle omits {required} from files")
         found.append(f"{payload['name']}@{payload.get('version')}")
     if found:
         print(f"       bundles: {', '.join(found)}")
@@ -198,6 +206,29 @@ def host_evidence() -> None:
         declared.append(manifest.host_id)
     if declared:
         print(f"       evidence: {', '.join(sorted(declared))}")
+
+
+def ci_workflows() -> None:
+    """The CI publish workflow must still describe the bundles it releases."""
+    workflow_root = REPO_ROOT / ".github" / "workflows"
+    if not workflow_root.is_dir():
+        raise ValueError(".github/workflows is missing; npm release has no automation")
+    workflows = sorted(path for path in workflow_root.iterdir() if path.suffix in {".yml", ".yaml"})
+    if not workflows:
+        raise ValueError(".github/workflows holds no workflow file")
+    texts = {path.name: path.read_text(encoding="utf-8") for path in workflows}
+    published = []
+    for _host_id, _package_root, payload in native_bundle_packages():
+        name = payload["name"]
+        if not any(name in text for text in texts.values()):
+            raise ValueError(f"no workflow publishes {name}; the npm bundle would never ship")
+        if (payload.get("publishConfig") or {}).get("access") != "public":
+            raise ValueError(f"{name} does not set publishConfig.access=public")
+        if not any("NPM_TOKEN" in text for text in texts.values()):
+            raise ValueError("workflows never read NPM_TOKEN")
+        published.append(name)
+    if published:
+        print(f"       workflows: {', '.join(sorted(texts))} -> {', '.join(published)}")
 
 
 def branding_residue() -> None:
@@ -249,6 +280,7 @@ def main() -> int:
     check("distribution manifests", errors, distribution_manifests)
     check("native plugin bundles", errors, native_bundles)
     check("host E2E evidence", errors, host_evidence)
+    check("CI publish workflows", errors, ci_workflows)
     check("branding residue (excluding attribution files)", errors, branding_residue)
     check("documentation links", errors, documentation_links)
     print()
