@@ -1,0 +1,5 @@
+interface:
+  display_name: "aegis:init"
+  short_description: "AegisHarness 初始化入口。默认初始化单服务仓库；"
+policy:
+  allow_implicit_invocation: true

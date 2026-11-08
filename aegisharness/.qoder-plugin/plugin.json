@@ -1,0 +1,21 @@
+{
+  "name": "aegis",
+  "version": "1.0.0",
+  "author": {
+    "name": "AegisHarness contributors"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "harness",
+    "workflow",
+    "spec",
+    "knowledge",
+    "review"
+  ],
+  "description": "AegisHarness 面向 Qoder 的研发工作流插件",
+  "displayName": "AegisHarness",
+  "commands": "./commands",
+  "skills": "./skills",
+  "agents": "./agents",
+  "rules": "./hosts/qoder/rules"
+}

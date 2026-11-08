@@ -1,0 +1,42 @@
+{
+  "projection_version": "1.0",
+  "surface": "skill",
+  "entrypoints": {
+    "init": [
+      "hosts/deepseek-dsh/skills/aegis-init/SKILL.md",
+      "commands/init.md"
+    ],
+    "propose": [
+      "hosts/deepseek-dsh/skills/aegis-propose/SKILL.md",
+      "commands/propose.md"
+    ],
+    "apply": [
+      "hosts/deepseek-dsh/skills/aegis-apply/SKILL.md",
+      "commands/apply.md"
+    ],
+    "archive": [
+      "hosts/deepseek-dsh/skills/aegis-archive/SKILL.md",
+      "commands/archive.md"
+    ],
+    "bug-fix": [
+      "hosts/deepseek-dsh/skills/aegis-bug-fix/SKILL.md",
+      "commands/bug-fix.md"
+    ],
+    "ut": [
+      "hosts/deepseek-dsh/skills/aegis-ut/SKILL.md",
+      "commands/ut.md"
+    ],
+    "update": [
+      "hosts/deepseek-dsh/skills/aegis-update/SKILL.md",
+      "commands/update.md"
+    ],
+    "status": [
+      "hosts/deepseek-dsh/skills/aegis-status/SKILL.md",
+      "commands/status.md"
+    ],
+    "config": [
+      "hosts/deepseek-dsh/skills/aegis-config/SKILL.md",
+      "commands/config.md"
+    ]
+  }
+}

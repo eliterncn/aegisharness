@@ -1,0 +1,23 @@
+# DeepSeek Harness (dsh) 子代理协议
+
+适用于 Apply 的双轴代码评审（Standards / Spec 两个独立只读角色）、Init 的并行扫描
+与 Workspace 的跨仓分派。
+
+## 派发
+
+- 主 Agent 保留写入所有权，子代理只做只读分析并返回结论。
+- DSH Standard preset 提供原生 subagent；Minimal / Code preset 不保证可用。派发前用
+  `--dump-config` 确认当前 profile 的 subagent provider，不可用时按下方降级执行。
+- 每个子代理获得：当前 `diff`、需求/Spec、测试结果与本次评审轴；不继承作者的完整对话上下文。
+- 派发前确认子代理工具集与权限边界，禁止子代理修改业务代码或推进工作流阶段。
+
+## 等待与终态
+
+- 只有真实终态（完成 / 失败 / 阻塞）才记账；超时或工具不可用记为 `BLOCKED`，不伪造结论。
+- 返回身份必须与派发记录一致；产物按 `hosts/shared/subagent-result-encoding.md` 编码。
+- DSH 的 Trajectory 只作核对，不替代 `verify-report.md` 里的验证证据。
+
+## 降级
+
+当前 profile 不提供原生子代理时，在同一会话内按顺序执行两次独立的只读评审，
+明确标注 `emulated`，并保留两份可区分的评审记录；不得合并为一次评审。

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 620" width="1400" height="620" role="img" aria-label="AegisHarness 自进化证据闭环">
+  <defs>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1F3A5F" flood-opacity="0.07"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8FA3BF"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="620" fill="#FFFFFF"/>
+
+  <text x="56" y="62" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#1F2D3D">AegisHarness 自进化证据闭环</text>
+  <text x="56" y="96" font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="16" fill="#6B7A90">生产观测与人工评测，共同驱动可验证的能力改进</text>
+  <line x1="56" y1="116" x2="1344" y2="116" stroke="#E3EAF5" stroke-width="1"/>
+
+  <g font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif">
+    <!-- Evidence source 1 -->
+    <rect x="50" y="146" width="196" height="26" rx="6" fill="#EAF2FF" stroke="#C7DDFF" stroke-width="1"/>
+    <text x="62" y="164" font-size="13" font-weight="600" fill="#0958D9">来源 1 · 生产观测（自动）</text>
+
+    <g filter="url(#soft)">
+      <rect x="50" y="184" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="210" y="184" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="370" y="184" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#A8DCC4" stroke-width="1.5"/>
+    </g>
+    <text x="120" y="217" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">数据上报</text>
+    <text x="120" y="239" text-anchor="middle" font-size="12" fill="#6B7A90">阶段账本</text>
+    <text x="280" y="217" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">eval-log 事实源</text>
+    <text x="280" y="239" text-anchor="middle" font-size="12" fill="#6B7A90">仅合格证据</text>
+    <text x="440" y="217" text-anchor="middle" font-size="15" font-weight="600" fill="#1B7F5B">质量 Gate</text>
+    <text x="440" y="239" text-anchor="middle" font-size="12" fill="#6B7A90">仅合格证据进入</text>
+    <line x1="192" y1="222" x2="208" y2="222" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="352" y1="222" x2="368" y2="222" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- Evidence source 2 -->
+    <rect x="50" y="292" width="196" height="26" rx="6" fill="#FFF4E3" stroke="#F3DCB8" stroke-width="1"/>
+    <text x="62" y="310" font-size="13" font-weight="600" fill="#AD6800">来源 2 · 人工评测（受控）</text>
+
+    <g filter="url(#soft)">
+      <rect x="50" y="330" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="210" y="330" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="370" y="330" width="140" height="76" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+    </g>
+    <text x="120" y="363" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">人工 / 正式评测</text>
+    <text x="120" y="385" text-anchor="middle" font-size="12" fill="#6B7A90">裁决记录</text>
+    <text x="280" y="363" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">回归与硬门禁</text>
+    <text x="280" y="385" text-anchor="middle" font-size="12" fill="#6B7A90">失败样本</text>
+    <text x="440" y="363" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">评测修复证据</text>
+    <text x="440" y="385" text-anchor="middle" font-size="12" fill="#6B7A90">可复核材料</text>
+    <line x1="192" y1="368" x2="208" y2="368" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="352" y1="368" x2="368" y2="368" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- Convergence -->
+    <path d="M 510 222 H 548 V 290" fill="none" stroke="#8FA3BF" stroke-width="1.5"/>
+    <path d="M 510 368 H 548 V 310" fill="none" stroke="#8FA3BF" stroke-width="1.5"/>
+    <line x1="548" y1="290" x2="586" y2="290" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Main chain -->
+  <g font-family="PingFang SC, Microsoft YaHei, Noto Sans CJK SC, sans-serif">
+    <g filter="url(#soft)">
+      <rect x="590" y="240" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#C7DDFF" stroke-width="1.5"/>
+      <rect x="745" y="240" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#F3DCB8" stroke-width="1.5"/>
+      <rect x="900" y="240" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="1055" y="240" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#DCE5F2" stroke-width="1"/>
+      <rect x="1210" y="240" width="130" height="100" rx="10" fill="#FFFFFF" stroke="#F3DCB8" stroke-width="1.5"/>
+    </g>
+    <text x="655" y="278" text-anchor="middle" font-size="15" font-weight="600" fill="#0958D9">进化假设</text>
+    <text x="655" y="300" text-anchor="middle" font-size="12" fill="#6B7A90">证据驱动</text>
+    <text x="810" y="278" text-anchor="middle" font-size="15" font-weight="600" fill="#AD6800">候选变更</text>
+    <text x="810" y="300" text-anchor="middle" font-size="12" fill="#6B7A90">单项隔离</text>
+    <text x="965" y="278" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">冻结实验</text>
+    <text x="965" y="300" text-anchor="middle" font-size="12" fill="#6B7A90">Base / Candidate</text>
+    <text x="1120" y="278" text-anchor="middle" font-size="15" font-weight="600" fill="#1F2D3D">统一 Benchmark</text>
+    <text x="1120" y="300" text-anchor="middle" font-size="12" fill="#6B7A90">回归闸门</text>
+    <text x="1275" y="278" text-anchor="middle" font-size="15" font-weight="600" fill="#AD6800">人工采纳决策</text>
+    <text x="1275" y="300" text-anchor="middle" font-size="12" fill="#6B7A90">采纳 / 拒绝</text>
+
+    <line x1="722" y1="290" x2="743" y2="290" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="877" y1="290" x2="898" y2="290" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="1032" y1="290" x2="1053" y2="290" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <line x1="1187" y1="290" x2="1208" y2="290" stroke="#8FA3BF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <!-- Feedback loop -->
+    <path d="M 1275 340 V 442 H 655 V 342" fill="none" stroke="#8FA3BF" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+    <rect x="838" y="424" width="310" height="34" rx="8" fill="#F6F8FC" stroke="#E3EAF5" stroke-width="1"/>
+    <text x="993" y="446" text-anchor="middle" font-size="13" fill="#4B5C74">评测结果形成下一条修复线索</text>
+
+    <!-- Legend -->
+    <rect x="590" y="512" width="16" height="16" rx="4" fill="#EAF2FF" stroke="#C7DDFF" stroke-width="1"/>
+    <text x="614" y="525" font-size="13" fill="#4B5C74">机器步骤（自动化）</text>
+    <rect x="790" y="512" width="16" height="16" rx="4" fill="#FFF4E3" stroke="#F3DCB8" stroke-width="1"/>
+    <text x="814" y="525" font-size="13" fill="#4B5C74">人工把关（采纳由人决定）</text>
+    <rect x="1030" y="512" width="16" height="16" rx="4" fill="#FFFFFF" stroke="#A8DCC4" stroke-width="1.5"/>
+    <text x="1054" y="525" font-size="13" fill="#4B5C74">可信事实 / 质量门</text>
+  </g>
+</svg>

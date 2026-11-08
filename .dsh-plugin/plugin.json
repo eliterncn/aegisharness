@@ -1,0 +1,31 @@
+{
+  "name": "aegis",
+  "version": "1.0.0",
+  "author": {
+    "name": "AegisHarness contributors"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "harness",
+    "workflow",
+    "spec",
+    "knowledge",
+    "review"
+  ],
+  "description": "AegisHarness 面向 DeepSeek Harness (dsh) 的研发工作流插件（声明清单，非 Cordis npm 包）",
+  "displayName": "AegisHarness",
+  "commands": "./commands",
+  "skills": [
+    "./hosts/deepseek-dsh/skills",
+    "./skills"
+  ],
+  "agents": "./agents",
+  "instructions": "AGENTS.md",
+  "profiles": [
+    "web",
+    "headless"
+  ],
+  "install_mode": "skills_and_instructions",
+  "npm_package": null,
+  "source": "./aegisharness"
+}

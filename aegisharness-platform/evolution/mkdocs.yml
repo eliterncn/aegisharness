@@ -1,0 +1,4 @@
+site_name: AegisHarness Evolution
+docs_dir: docs
+nav:
+  - 使用: index.md

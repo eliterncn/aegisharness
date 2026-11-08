@@ -1,0 +1,5 @@
+interface:
+  display_name: "aegis:update"
+  short_description: "检查并升级 AegisHarness plugin。"
+policy:
+  allow_implicit_invocation: true

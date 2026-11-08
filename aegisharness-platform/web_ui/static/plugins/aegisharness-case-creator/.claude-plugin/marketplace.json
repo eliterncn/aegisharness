@@ -1,0 +1,11 @@
+{
+  "name": "aegisharness-platform",
+  "owner": {"name": "AegisHarness"},
+  "plugins": [
+    {
+      "name": "aegisharness-case-creator",
+      "source": ".",
+      "description": "Create and validate portable AegisHarness evaluation Cases"
+    }
+  ]
+}

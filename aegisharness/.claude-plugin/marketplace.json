@@ -1,0 +1,17 @@
+{
+  "name": "aegisharness-marketplace",
+  "owner": {
+    "name": "aegisharness-marketplace"
+  },
+  "metadata": {
+    "description": "Plugin marketplace for the AegisHarness repository, exposing the aegisharness workflow plugin for Claude Code, Codex, MiniMax Code, WorkBuddy, Qoder and DeepSeek Harness (dsh)"
+  },
+  "plugins": [
+    {
+      "name": "aegis",
+      "description": "AegisHarness workflow plugin for six hosts with commands and reusable skills",
+      "source": ".",
+      "version": "1.0.0"
+    }
+  ]
+}

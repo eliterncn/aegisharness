@@ -1,0 +1,51 @@
+{
+  "host_id": "qoder",
+  "host_api_version": "1.1",
+  "aliases": [
+    "qoder-cli",
+    "qoder-ide"
+  ],
+  "support": {
+    "level": "preview",
+    "display_name": "Qoder",
+    "evidence": null,
+    "limitations": [
+      "命令需经 Qoder 插件清单注册；Quest 模式与 AegisHarness 的 Spec 流程并行使用时以本插件契约为准。",
+      "遥测与插件自动更新适配器未接入，需使用宿主原生插件管理手动更新。",
+      "项目级 hook 未写入宿主设置文件，质量检查由公共命令与 docs/hooks/ 清单显式驱动。",
+      "未经官方 E2E 验证，支持等级为 preview。"
+    ]
+  },
+  "capabilities": {
+    "command_surface": "native",
+    "skill_discovery": "native",
+    "session_start": "unsupported",
+    "stop_hook": "unsupported",
+    "failure_hook": "unsupported",
+    "command_lifecycle": "emulated",
+    "workflow_transition": "emulated",
+    "subagents": "native",
+    "unit_test_workflow": "emulated",
+    "task_tracking": "emulated",
+    "project_hooks": "unsupported",
+    "session_events": "unsupported",
+    "telemetry": "unsupported",
+    "plugin_install": "native",
+    "plugin_update": "unsupported",
+    "session_end": "unsupported"
+  },
+  "adapters": {
+    "command_projection": "resource:hosts/qoder/command-projection.json",
+    "detector": "python:update_hosts.generic:detect_qoder",
+    "distribution": "resource:.qoder-plugin/plugin.json",
+    "installer": "resource:hosts/qoder/installer.md",
+    "lifecycle": "resource:hosts/qoder/lifecycle.md",
+    "project_config": "resource:hosts/qoder/project.json",
+    "project_hooks": "resource:hosts/qoder/project-hooks.json",
+    "runtime": "resource:hosts/qoder/runtime.md",
+    "subagent_protocol": "resource:hosts/qoder/subagent.md",
+    "telemetry_protocol": "resource:hosts/shared/telemetry.md",
+    "ut": "resource:hosts/qoder/ut.md",
+    "workflow_transition": "resource:hosts/qoder/workflow-transition.md"
+  }
+}

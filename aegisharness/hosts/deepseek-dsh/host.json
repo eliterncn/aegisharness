@@ -1,0 +1,54 @@
+{
+  "host_id": "deepseek-dsh",
+  "host_api_version": "1.1",
+  "aliases": [
+    "dsh",
+    "deepseek-harness",
+    "deepseek"
+  ],
+  "support": {
+    "level": "preview",
+    "display_name": "DeepSeek Harness (dsh)",
+    "evidence": null,
+    "limitations": [
+      "DSH 处于 developer preview，插件、profile 与 skills 目录约定可能随 RC 版本变化；安装前用 --dump-config 核对当前 profile。",
+      "命令以 Skill 薄入口投影；DSH 的 Skill 名只接受 kebab-case，/aegis:<command> 在本宿主对应 /aegis-<command> 触发别名。",
+      "dsh plugin add 要求目标是含 package.json 的 npm 包；本仓库 .dsh-plugin/plugin.json 是声明清单，不是可直接安装的 Cordis 插件包。",
+      "遥测与插件自动更新适配器未接入，需手动刷新 skills 目录或重新安装。",
+      "项目级 hook 未写入宿主设置文件，质量检查由公共命令与 docs/hooks/ 清单显式驱动。",
+      "未经官方 E2E 验证，支持等级为 preview。"
+    ]
+  },
+  "capabilities": {
+    "command_surface": "emulated",
+    "skill_discovery": "native",
+    "session_start": "unsupported",
+    "stop_hook": "unsupported",
+    "failure_hook": "unsupported",
+    "command_lifecycle": "emulated",
+    "workflow_transition": "emulated",
+    "subagents": "native",
+    "unit_test_workflow": "emulated",
+    "task_tracking": "emulated",
+    "project_hooks": "unsupported",
+    "session_events": "unsupported",
+    "telemetry": "unsupported",
+    "plugin_install": "native",
+    "plugin_update": "unsupported",
+    "session_end": "unsupported"
+  },
+  "adapters": {
+    "command_projection": "resource:hosts/deepseek-dsh/command-projection.json",
+    "detector": "python:update_hosts.generic:detect_deepseek_dsh",
+    "distribution": "resource:.dsh-plugin/plugin.json",
+    "installer": "resource:hosts/deepseek-dsh/installer.md",
+    "lifecycle": "resource:hosts/deepseek-dsh/lifecycle.md",
+    "project_config": "resource:hosts/deepseek-dsh/project.json",
+    "project_hooks": "resource:hosts/deepseek-dsh/project-hooks.json",
+    "runtime": "resource:hosts/deepseek-dsh/runtime.md",
+    "subagent_protocol": "resource:hosts/deepseek-dsh/subagent.md",
+    "telemetry_protocol": "resource:hosts/shared/telemetry.md",
+    "ut": "resource:hosts/deepseek-dsh/ut.md",
+    "workflow_transition": "resource:hosts/deepseek-dsh/workflow-transition.md"
+  }
+}

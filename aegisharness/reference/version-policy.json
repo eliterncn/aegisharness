@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "plugin": "aegis",
+  "marketplace": "aegisharness-marketplace",
+  "latest_version": "1.0.0",
+  "minimum_supported_version": "1.0.0",
+  "force_update_below": "1.0.0",
+  "force_update_message": "请使用当前版本的 AegisHarness。",
+  "releases": [
+    {
+      "version": "1.0.0",
+      "date": "2026-09-10",
+      "update_type": "recommended",
+      "title": "AegisHarness",
+      "changes": [
+        "AegisHarness 三阶段、Workspace、UT 和前端能力；propose --loop 自动完成至 Archive。"
+      ],
+      "restart_required": true
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "host_id": "minimax",
+  "host_api_version": "1.1",
+  "aliases": [
+    "mcode",
+    "minimax-code"
+  ],
+  "support": {
+    "level": "preview",
+    "display_name": "MiniMax Code",
+    "evidence": null,
+    "limitations": [
+      "命令以 Skill 投影提供，斜杠命令需显式说明 /aegis:<command> 与 Skill 的对应关系。",
+      "遥测与插件自动更新适配器未接入，需使用宿主原生插件管理手动更新。",
+      "项目级 hook 未写入宿主设置文件，质量检查由公共命令与 docs/hooks/ 清单显式驱动。",
+      "未经官方 E2E 验证，支持等级为 preview。"
+    ]
+  },
+  "capabilities": {
+    "command_surface": "emulated",
+    "skill_discovery": "native",
+    "session_start": "unsupported",
+    "stop_hook": "unsupported",
+    "failure_hook": "unsupported",
+    "command_lifecycle": "emulated",
+    "workflow_transition": "emulated",
+    "subagents": "native",
+    "unit_test_workflow": "emulated",
+    "task_tracking": "emulated",
+    "project_hooks": "unsupported",
+    "session_events": "unsupported",
+    "telemetry": "unsupported",
+    "plugin_install": "native",
+    "plugin_update": "unsupported",
+    "session_end": "unsupported"
+  },
+  "adapters": {
+    "command_projection": "resource:hosts/minimax/command-projection.json",
+    "detector": "python:update_hosts.generic:detect_minimax",
+    "distribution": "resource:.minimax-plugin/plugin.json",
+    "installer": "resource:hosts/minimax/installer.md",
+    "lifecycle": "resource:hosts/minimax/lifecycle.md",
+    "project_config": "resource:hosts/minimax/project.json",
+    "project_hooks": "resource:hosts/minimax/project-hooks.json",
+    "runtime": "resource:hosts/minimax/runtime.md",
+    "subagent_protocol": "resource:hosts/minimax/subagent.md",
+    "telemetry_protocol": "resource:hosts/shared/telemetry.md",
+    "ut": "resource:hosts/minimax/ut.md",
+    "workflow_transition": "resource:hosts/minimax/workflow-transition.md"
+  }
+}

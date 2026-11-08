@@ -1,0 +1,97 @@
+<style>
+  /* 与总览、配置共用白底、浅边框与蓝色强调；样式仅作用于反馈列表。 */
+  .aegisharness-feedback-page { min-width: 0; }
+  .aegisharness-feedback-summary { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  .aegisharness-feedback-stat { flex: 1 1 140px; padding: 16px 18px; border: 1px solid #E5E6EB; border-radius: 6px; background: #fff; }
+  .aegisharness-feedback-stat:first-child { border-color: #BAE0FF; background: #F7FAFF; }
+  .aegisharness-feedback-panel { min-width: 0; margin-bottom: 20px; padding: 16px; background: #fff; border: 1px solid #E5E6EB; border-radius: 6px; }
+  .aegisharness-feedback-panel-title { margin: 0 0 14px; color: #1D2129; font-size: 14px; font-weight: 600; }
+  .aegisharness-feedback-filters { display: grid; grid-template-columns: minmax(110px,.7fr) minmax(160px,1.2fr) minmax(110px,.7fr) minmax(180px,1.5fr) auto; align-items: end; gap: 12px; }
+  .aegisharness-feedback-filters label { min-width: 0; }
+  .aegisharness-feedback-filters select,.aegisharness-feedback-filters input { width: 100%; min-width: 0; height: 34px; }
+  .aegisharness-feedback-filter-actions { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .aegisharness-feedback-filter-actions button,.aegisharness-feedback-reset { display: inline-flex; align-items: center; justify-content: center; height: 34px; }
+  .aegisharness-feedback-reset { padding: 0 12px; border: 1px solid #E5E6EB; border-radius: 6px; color: #4E5969; font-size: 12px; }
+  .aegisharness-feedback-reset:hover { color: #1677FF; border-color: #91CAFF; }
+  .aegisharness-feedback-results { padding: 0; overflow: hidden; }
+  .aegisharness-feedback-results-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; }
+  .aegisharness-feedback-results-heading h2 { margin: 0; }
+  .aegisharness-feedback-results-heading h2 span { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 4px; background: #E8F3FF; color: #0958D9; font-size: 11px; font-weight: 500; }
+  .aegisharness-feedback-table-scroll { overflow-x: auto; }
+  .aegisharness-feedback-table { width: 100%; min-width: 960px; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
+  .aegisharness-feedback-table th { padding: 10px 16px; background: #F5F7FA; border-top: 1px solid #E5E6EB; border-bottom: 1px solid #E5E6EB; text-align: left; color: #4E5969; font-size: 11px; font-weight: 600; }
+  .aegisharness-feedback-table td { padding: 15px 16px; border-bottom: 1px solid #F0F0F0; vertical-align: top; color: #1D2129; line-height: 1.65; }
+  .aegisharness-feedback-table tbody tr:hover { background: #F7FAFF; }
+  .aegisharness-feedback-table tbody tr:last-child td { border-bottom: 0; }
+  .aegisharness-feedback-copy { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; line-height: 1.8; }
+  .aegisharness-feedback-copy:hover { color: #1677FF; }
+  .aegisharness-feedback-feature { overflow-wrap: anywhere; font-weight: 500; }
+  .aegisharness-feedback-project { margin-top: 4px; color: #86909C; font-family: 'SFMono-Regular',Consolas,monospace; font-size: 10px; overflow-wrap: anywhere; }
+  .aegisharness-feedback-time { display: block; margin-top: 4px; color: #86909C; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .aegisharness-feedback-category { display: inline-block; padding: 2px 8px; border-radius: 4px; background: #F2F3F5; color: #4E5969; font-size: 11px; }
+  .aegisharness-feedback-category.is-bug { background: #FFF1F0; color: #CF1322; }
+  .aegisharness-feedback-category.is-suggestion { background: #E8F3FF; color: #0958D9; }
+  .aegisharness-feedback-version { color: #4E5969; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .aegisharness-feedback-table .aegisharness-feedback-action { text-align: right; white-space: nowrap; }
+  .aegisharness-feedback-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #E5E6EB; padding: 12px 16px; color: #86909C; font-size: 12px; }
+  .aegisharness-feedback-empty { padding: 30px 16px; text-align: center; color: #86909C; }
+  .aegisharness-feedback-empty b { color: #4E5969; font-size: 14px; }
+  .aegisharness-feedback-empty p { margin: 8px 0 12px; }
+  .aegisharness-feedback-page a:focus-visible,.aegisharness-feedback-page button:focus-visible,.aegisharness-feedback-table-scroll:focus-visible { outline: 2px solid #1677FF; outline-offset: 3px; }
+  @media (max-width: 1200px) {
+    .aegisharness-feedback-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .aegisharness-feedback-filter-actions { grid-column: 1 / -1; justify-content: flex-end; }
+  }
+  @media (max-width: 640px) {
+    .aegisharness-feedback-page { padding: 16px; }
+    .aegisharness-feedback-summary { gap: 8px; }
+    .aegisharness-feedback-stat { flex-basis: calc(50% - 8px); padding: 12px; }
+    .aegisharness-feedback-filters { grid-template-columns: minmax(0,1fr); }
+  }
+  .aegisharness-feedback-detail-header,.aegisharness-feedback-section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .aegisharness-feedback-detail-layout { display: grid; grid-template-columns: minmax(0,1fr) 280px; gap: 20px; align-items: start; }
+  .aegisharness-feedback-detail-main,.aegisharness-feedback-detail-aside { min-width: 0; display: grid; gap: 20px; }
+  .aegisharness-feedback-detail .aegisharness-feedback-panel { margin: 0; padding: 18px; }
+  .aegisharness-feedback-section-head .aegisharness-feedback-panel-title { margin: 0; }
+  .aegisharness-feedback-requirement { display: flex; gap: 10px; align-items: baseline; margin-top: 14px; padding: 9px 12px; border-radius: 4px; background: #F5F7FA; font-size: 11px; }
+  .aegisharness-feedback-requirement span { color: #86909C; flex-shrink: 0; }
+  .aegisharness-feedback-requirement b { color: #4E5969; font-weight: 500; overflow-wrap: anywhere; }
+  .aegisharness-feedback-body { margin-top: 18px; color: #1D2129; font-size: 13px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .aegisharness-feedback-count { margin-left: 8px; padding: 2px 7px; border-radius: 4px; color: #0958D9; background: #E8F3FF; font-size: 11px; font-weight: 500; }
+  .aegisharness-feedback-section-note { margin: 10px 0 14px; font-size: 11px; color: #86909C; }
+  .aegisharness-feedback-workflow-scroll { border: 1px solid #E5E6EB; border-radius: 5px; }
+  .aegisharness-feedback-workflow-table { min-width: 640px; }
+  .aegisharness-feedback-workflow-table th { border-top: 0; }
+  .aegisharness-feedback-workflow-table th,.aegisharness-feedback-workflow-table td { padding: 10px 12px; }
+  .aegisharness-feedback-workflow-table time { color: #86909C; font-size: 11px; font-variant-numeric: tabular-nums; }
+  .aegisharness-feedback-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; color: #4E5969; background: #F2F3F5; }
+  .aegisharness-feedback-status.is-complete { color: #237804; background: #F6FFED; }
+  .aegisharness-feedback-status.is-blocked { color: #CF1322; background: #FFF1F0; }
+  .aegisharness-feedback-status.is-active { color: #0958D9; background: #E8F3FF; }
+  .aegisharness-feedback-detail-empty { margin-top: 14px; padding: 20px 16px; border-radius: 5px; background: #F5F7FA; font-size: 12px; color: #86909C; }
+  .aegisharness-feedback-detail-empty b { color: #4E5969; font-weight: 500; }
+  .aegisharness-feedback-detail-empty p { margin-top: 6px; line-height: 1.7; }
+  .aegisharness-feedback-metadata { margin: 0; font-size: 12px; }
+  .aegisharness-feedback-metadata > div { display: grid; grid-template-columns: 66px minmax(0,1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid #F0F0F0; }
+  .aegisharness-feedback-metadata > div:last-child { border-bottom: 0; padding-bottom: 0; }
+  .aegisharness-feedback-metadata dt { color: #86909C; }
+  .aegisharness-feedback-metadata dd { margin: 0; color: #4E5969; overflow-wrap: anywhere; }
+  .aegisharness-feedback-mono { font-family: 'SFMono-Regular',Consolas,monospace; font-size: 10px; line-height: 1.8; }
+  .aegisharness-feedback-technical summary { display: flex; justify-content: space-between; cursor: pointer; color: #4E5969; font-size: 12px; font-weight: 600; list-style: none; }
+  .aegisharness-feedback-technical summary::-webkit-details-marker { display: none; }
+  .aegisharness-feedback-technical[open] summary { margin-bottom: 10px; }
+  .aegisharness-feedback-technical[open] summary span { transform: rotate(180deg); }
+  .aegisharness-feedback-transcript-stats { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 12px 0 16px; color: #86909C; font-size: 11px; }
+  .aegisharness-feedback-transcript-stats b { color: #4E5969; font-weight: 500; }
+  .aegisharness-feedback-conversation { max-height: 540px; overflow-y: auto; padding-right: 6px; }
+  .aegisharness-feedback-message { padding: 12px 14px; margin-bottom: 12px; border: 1px solid #E5E6EB; border-left: 3px solid #C9CDD4; border-radius: 5px; background: #FAFBFC; }
+  .aegisharness-feedback-message:last-child { margin-bottom: 0; }
+  .aegisharness-feedback-message.is-user { border-left-color: #1677FF; background: #F7FAFF; }
+  .aegisharness-feedback-message header { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; color: #4E5969; font-size: 11px; }
+  .aegisharness-feedback-message.is-user header b { color: #0958D9; }
+  .aegisharness-feedback-message time { color: #86909C; font-variant-numeric: tabular-nums; }
+  .aegisharness-feedback-message-line { white-space: pre-wrap; overflow-wrap: anywhere; color: #1D2129; font-size: 12px; line-height: 1.8; }
+  .aegisharness-feedback-tool-line { padding: 6px 8px; margin-top: 4px; background: #F2F3F5; border-radius: 4px; color: #86909C; font: 10px/1.8 'SFMono-Regular',Consolas,monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .aegisharness-feedback-technical summary:focus-visible,.aegisharness-feedback-conversation:focus-visible { outline: 2px solid #1677FF; outline-offset: 3px; }
+  @media (max-width: 1100px) { .aegisharness-feedback-detail-layout { grid-template-columns: minmax(0,1fr); } }
+</style>
