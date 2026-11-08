@@ -53,7 +53,7 @@ Registry 扫描 `hosts/*/host.json`，**不在核心代码里维护平台分支*
 | MiniMax Code | 命令以 Skill 投影提供，需在对话中显式说明 `/aegis:<command>` 与 Skill 的对应关系；插件更新走宿主原生管理。 |
 | WorkBuddy / CodeBuddy | 安装后需 `/reload-plugins` 并新开会话；插件更新走宿主原生管理。 |
 | Qoder | Quest 模式生成的 Spec 不能替代 AegisHarness 的 Spec/Tasks 契约，两者并行时以本插件契约为准；插件更新走宿主原生管理。 |
-| DeepSeek Harness / dsh | 处于 developer preview，profile / bundle 约定可能随 RC 变化；原生安装走 `dsh plugin --profile <name> add @elierncn/aegisharness-dsh`（自动写入 `dsh.profile.bundles`），Skill 由 `ctx.skills.register` 在插件内注册，不落 `$DSH_HOME/skills`；Skill 名 kebab-case，`/aegis:<cmd>` 以 `/aegis-<cmd>` 触发。 |
+| DeepSeek Harness / dsh | 处于 developer preview，profile / bundle 约定可能随 RC 变化；原生安装走 `dsh plugin --profile <name> add @eliterncn/aegisharness-dsh`（自动写入 `dsh.profile.bundles`），Skill 由 `ctx.skills.register` 在插件内注册，不落 `$DSH_HOME/skills`；Skill 名 kebab-case，`/aegis:<cmd>` 以 `/aegis-<cmd>` 触发。 |
 
 四个 preview 宿主共同限制：无插件级 SessionStart/Stop hook、无项目级 settings 合并、无遥测、
 无自动升级。质量检查通过 `docs/hooks/` 清单与公共命令中的检查点显式驱动。

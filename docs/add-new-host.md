@@ -224,7 +224,7 @@ dsh 不走 json 清单，而是一个**可发布的 npm 包**。三份文件构�
 
 ```json
 {
-  "name": "@elierncn/aegisharness-dsh",
+  "name": "@eliterncn/aegisharness-dsh",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -242,7 +242,7 @@ dsh 不走 json 清单，而是一个**可发布的 npm 包**。三份文件构�
 # cordis.patch.yml —— insert 自己，不要写死宿主侧路径
 - insert:
     - id: aegisharness
-      name: '@elierncn/aegisharness-dsh'
+      name: '@eliterncn/aegisharness-dsh'
 ```
 
 ```js

@@ -13,7 +13,7 @@
     "limitations": [
       "DSH 处于 developer preview（0.2.x RC），插件、profile 与 bundle 约定可能随版本变化；升级前用 dsh --version 与 --dump-config 核对。",
       "命令以 Skill 薄入口投影；DSH 的 Skill 名只接受 kebab-case，/aegis:<command> 在本宿主对应 /aegis-<command> 触发别名。",
-      "原生安装从 npm 获取 @elierncn/aegisharness-dsh（dsh plugin --profile <name> add）；包发布前只能用 installer.md 的开发者安装方式。",
+      "原生安装从 npm 获取 @eliterncn/aegisharness-dsh（dsh plugin --profile <name> add）；包发布前只能用 installer.md 的开发者安装方式。",
       "插件通过 ctx.skills.register 注册运行时 Skill，不写 $DSH_HOME/skills 文件；需要文件形式时用 installer.md 的 skills 目录方案。",
       "遥测与插件自动更新适配器未接入，升级用 dsh plugin --profile <name> add <pkg>@latest。",
       "项目级 hook 未写入宿主设置文件，质量检查由公共命令与 docs/hooks/ 清单显式驱动。",

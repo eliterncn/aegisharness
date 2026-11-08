@@ -20,7 +20,7 @@ MANIFEST = PLUGIN_ROOT / "package.json"
 class DshPluginModuleTest(unittest.TestCase):
     def test_bundle_manifest_declares_the_shipped_patch(self) -> None:
         payload = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        self.assertEqual(payload["name"], "@elierncn/aegisharness-dsh")
+        self.assertEqual(payload["name"], "@eliterncn/aegisharness-dsh")
         self.assertEqual(payload["dsh"]["bundle"]["patch"], "./cordis.patch.yml")
         self.assertEqual(payload["exports"]["."], "./lib/index.js")
         self.assertTrue((PLUGIN_ROOT / "cordis.patch.yml").is_file())

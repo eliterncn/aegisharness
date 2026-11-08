@@ -10,7 +10,7 @@
 
 ## 方式 A：原生插件（推荐）
 
-本仓库的插件根就是 npm 包 `@elierncn/aegisharness-dsh` 的包根：`package.json` 用
+本仓库的插件根就是 npm 包 `@eliterncn/aegisharness-dsh` 的包根：`package.json` 用
 `dsh.bundle.patch` 声明 `cordis.patch.yml`，该 patch 只插入一个条目，由
 `lib/index.js` 通过 `ctx.skills.register()` 把九个公共命令注册成运行时 Skill。
 因此安装就是 `dsh` 自己的插件管理，不需要往 `$DSH_HOME/skills/` 拷文件。
@@ -20,7 +20,7 @@
 npm install -g @deepseek-ai/dsh
 
 # 2) 用 dsh 自己的插件管理安装，并自动写入 profile 的 bundles
-dsh plugin --profile web add @elierncn/aegisharness-dsh
+dsh plugin --profile web add @eliterncn/aegisharness-dsh
 
 # 3) 确认 profile 已包含本插件的 bundle 层与组合条目
 dsh --profile web --dump-config | grep -A1 aegisharness
@@ -33,7 +33,7 @@ dsh web
 profile `package.json` 的 `dsh.profile.bundles`，因此不需要手改清单。卸载同样一条命令：
 
 ```bash
-dsh plugin --profile web remove @elierncn/aegisharness-dsh
+dsh plugin --profile web remove @eliterncn/aegisharness-dsh
 ```
 
 包尚未发布到 npm 时，用本地路径做同样的原生安装（开发者模式）：
@@ -83,7 +83,7 @@ export AEGISHARNESS_PLATFORM=deepseek-dsh
 ## 验证
 
 1. `dsh --profile web --dump-config` 输出中出现 `id: aegisharness` 与
-   `name: '@elierncn/aegisharness-dsh'`。
+   `name: '@eliterncn/aegisharness-dsh'`。
 2. 重启 DSH 并新开会话，确认九个 Skill 可见：`aegis-init`、`aegis-propose`、
    `aegis-apply`、`aegis-archive`、`aegis-bug-fix`、`aegis-ut`、`aegis-update`、
    `aegis-status`、`aegis-config`。
@@ -99,8 +99,8 @@ export AEGISHARNESS_PLATFORM=deepseek-dsh
 升级走宿主自己的包管理：
 
 ```bash
-dsh plugin --profile web add @elierncn/aegisharness-dsh@latest
-dsh plugin --profile web remove @elierncn/aegisharness-dsh   # 卸载
+dsh plugin --profile web add @eliterncn/aegisharness-dsh@latest
+dsh plugin --profile web remove @eliterncn/aegisharness-dsh   # 卸载
 ```
 
 方式 B 卸载时删除 `$DSH_SKILLS/aegis-*` 软链。两种方式都不会删除业务仓库中的

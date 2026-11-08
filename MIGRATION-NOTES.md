@@ -86,7 +86,7 @@ python3 host_e2e.py --all
 | Python 源码编译（全仓） | PASS |
 | Host Kit 契约（manifest / 11 资源 / 命令投影 / 项目配置 / hooks） | PASS（6 个宿主） |
 | 分发清单 | PASS |
-| 原生插件 bundle（`dsh.bundle.patch` / `exports` / `files` 覆盖） | PASS（`@elierncn/aegisharness-dsh@1.0.0`） |
+| 原生插件 bundle（`dsh.bundle.patch` / `exports` / `files` 覆盖） | PASS（`@eliterncn/aegisharness-dsh@1.0.0`） |
 | 宿主 E2E 证据（`support.evidence` 一致性） | PASS（两个 stable 宿主） |
 | CI 发布工作流（工作流引用了 bundle 名与 `NPM_TOKEN`、`publishConfig.access=public`） | PASS（`publish-npm.yml`） |
 | 品牌残留（排除法律署名文件） | PASS |
@@ -171,8 +171,8 @@ pnpm，要求目标是含 `package.json` 的 npm 包。因此 dsh 改为原生 n
 
 | 文件 | 作用 |
 | --- | --- |
-| `aegisharness/package.json` | 包名 `@elierncn/aegisharness-dsh`；`dsh.bundle.patch` → `./cordis.patch.yml`；`exports` 同时导出模块与 patch |
-| `aegisharness/cordis.patch.yml` | `insert` 一个条目：`id: aegisharness`、`name: '@elierncn/aegisharness-dsh'` |
+| `aegisharness/package.json` | 包名 `@eliterncn/aegisharness-dsh`；`dsh.bundle.patch` → `./cordis.patch.yml`；`exports` 同时导出模块与 patch |
+| `aegisharness/cordis.patch.yml` | `insert` 一个条目：`id: aegisharness`、`name: '@eliterncn/aegisharness-dsh'` |
 | `aegisharness/lib/index.js` | Cordis 插件（`name` / `inject: ['skills']` / `apply`）：读取 `hosts/deepseek-dsh/skills/aegis-*/SKILL.md`，把正文里的插件根改写成安装后绝对路径，再 `ctx.skills.register()` 注册九个运行时 Skill（`source: bundled`、`resourceBase` 指向包根） |
 | `aegisharness/tests/dsh-plugin.test.mjs` | 离线自检：无 dsh、无网络，断言九个 Skill、kebab-case、绝对路径与 patch 一致性 |
 | `aegisharness/scripts/tests/test_dsh_plugin_module.py` | 把上面这份自检接进统一测试入口 |
@@ -180,20 +180,20 @@ pnpm，要求目标是含 `package.json` 的 npm 包。因此 dsh 改为原生 n
 
 README（中/英）、`docs/installation.md`、`docs/host-support-matrix.md`、
 `docs/add-new-host.md` 与 `installer.md` 全部改为一条安装命令：
-`dsh plugin --profile <name> add @elierncn/aegisharness-dsh`。
+`dsh plugin --profile <name> add @eliterncn/aegisharness-dsh`。
 
 ### 本地实测（dsh 0.2.2-rc.1）
 
 ```bash
-npm pack                 # @elierncn/aegisharness-dsh-1.0.0.tgz，705 KB / 341 文件
-dsh plugin --profile web add file:.../elierncn-aegisharness-dsh-1.0.0.tgz
+npm pack                 # @eliterncn/aegisharness-dsh-1.0.0.tgz，705 KB / 341 文件
+dsh plugin --profile web add file:.../eliterncn-aegisharness-dsh-1.0.0.tgz
 dsh --profile web --dump-config | grep -A1 aegisharness
-dsh plugin --profile web remove @elierncn/aegisharness-dsh
+dsh plugin --profile web remove @eliterncn/aegisharness-dsh
 ```
 
-- 安装后 profile `package.json` 的 `dsh.profile.bundles` **自动**追加 `@elierncn/aegisharness-dsh`，
+- 安装后 profile `package.json` 的 `dsh.profile.bundles` **自动**追加 `@eliterncn/aegisharness-dsh`，
   不需要手改清单；
-- 组合树出现 `- id: aegisharness` / `name: '@elierncn/aegisharness-dsh'`；
+- 组合树出现 `- id: aegisharness` / `name: '@eliterncn/aegisharness-dsh'`；
 - 卸载命令可干净回退（包与 bundles 条目一起移除）；
 - `--dump-config-schema` 在本插件存在与不存在时报同样的 4 条 web-profile 既有错误，
   说明这些错误与本插件无关。
@@ -202,7 +202,7 @@ dsh plugin --profile web remove @elierncn/aegisharness-dsh
 
 `npm publish` 需要有效的 npm 凭据。当前机器上的 `~/.npmrc` 只有一个 40 字符的 legacy token，
 用它对 `registry.npmjs.org` 调 `GET /-/whoami` 返回 **401**，因此本仓库无法自动发布。
-包名 `@elierncn/aegisharness-dsh` 在公共 registry 上仍为 **404（未被占用）**，可用。
+包名 `@eliterncn/aegisharness-dsh` 在公共 registry 上仍为 **404（未被占用）**，可用。
 
 手动发布（一次性）：
 
@@ -232,14 +232,14 @@ npm publish --access public
 - **发布前门禁**：`node tests/dsh-plugin.test.mjs` + `python3 scripts/check_release.py`，
   任一失败即中止；tag 与 `aegisharness/package.json` 的 `version` 不一致也直接失败；
 - **provenance**：`npm publish --provenance`，npm 页面会链回本次 commit；
-- **发布后自检**：轮询 `npm view @elierncn/aegisharness-dsh@<version>` 直到 registry 可解析，
+- **发布后自检**：轮询 `npm view @eliterncn/aegisharness-dsh@<version>` 直到 registry 可解析，
   避免「发布了但装不上」；
 - **不要给 `setup-node` 加 `registry-url`**：它会写一个 `_authToken` 为空的 `.npmrc`，
   空凭据会挡住 OIDC 发布。`check_release.py` 的 CI 检查会拦这种写法。
 
 从 token 切到 OIDC 的顺序（首版发布成功后）：
 
-1. 打开 `https://www.npmjs.com/package/@elierncn/aegisharness-dsh` → Settings →
+1. 打开 `https://www.npmjs.com/package/@eliterncn/aegisharness-dsh` → Settings →
    Trusted Publisher → Add → **GitHub Actions**；
 2. 填 `elierncn` / `aegisharness` / `publish-npm.yml`（只填文件名，带 `.yml`）；
 3. **Allowed actions 里必须勾上 `npm publish`**——新建配置默认只允许 stage publish，
@@ -256,7 +256,7 @@ git tag v1.0.0 && git push origin v1.0.0
 发布后安装命令对外可用：
 
 ```bash
-dsh plugin --profile web add @elierncn/aegisharness-dsh
+dsh plugin --profile web add @eliterncn/aegisharness-dsh
 ```
 
 在此之前用本地路径走同一条原生路径：

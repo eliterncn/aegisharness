@@ -117,7 +117,7 @@ jobs:
             unset NODE_AUTH_TOKEN
           fi
           npm publish --access public --provenance
-          echo "published @elierncn/aegisharness-dsh@${{ steps.version.outputs.version }} via ${{ steps.auth.outputs.mode }}"
+          echo "published @eliterncn/aegisharness-dsh@${{ steps.version.outputs.version }} via ${{ steps.auth.outputs.mode }}"
 
       - name: Verify it is installable
         env:
@@ -127,7 +127,7 @@ jobs:
           version="${{ steps.version.outputs.version }}"
           # Registry metadata can lag a few seconds behind a fresh publish.
           for attempt in 1 2 3 4 5; do
-            if npm view "@elierncn/aegisharness-dsh@${version}" version --registry https://registry.npmjs.org; then
+            if npm view "@eliterncn/aegisharness-dsh@${version}" version --registry https://registry.npmjs.org; then
               exit 0
             fi
             echo "registry not serving ${version} yet (attempt ${attempt}); retrying in 5s"
@@ -146,8 +146,8 @@ jobs:
           {
             echo "### publish-npm"
             echo ""
-            echo "- package: \`@elierncn/aegisharness-dsh@${VERSION}\`"
+            echo "- package: \`@eliterncn/aegisharness-dsh@${VERSION}\`"
             echo "- trigger: \`${{ github.event_name }}\` on \`${{ github.ref_name }}\`"
             echo "- auth: \`${AUTH_MODE:-unknown}\`"
-            echo "- install with: \`dsh plugin --profile web add @elierncn/aegisharness-dsh\`"
+            echo "- install with: \`dsh plugin --profile web add @eliterncn/aegisharness-dsh\`"
           } >> "$GITHUB_STEP_SUMMARY"

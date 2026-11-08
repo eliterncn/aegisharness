@@ -48,7 +48,7 @@ npx --yes tailwindcss@3.4.17 -c tailwind.config.js -i web_ui/assets/tailwind.css
 
 ## Releasing the npm bundle
 
-The dsh plugin ships as `@elierncn/aegisharness-dsh`, published by
+The dsh plugin ships as `@eliterncn/aegisharness-dsh`, published by
 [`.github/workflows/publish-npm.yml`](.github/workflows/publish-npm.yml). Bump `version` in
 `aegisharness/package.json`, commit, then push a matching tag:
 

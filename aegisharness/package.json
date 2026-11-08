@@ -1,5 +1,5 @@
 {
-  "name": "@elierncn/aegisharness-dsh",
+  "name": "@eliterncn/aegisharness-dsh",
   "version": "1.0.0",
   "description": "AegisHarness for DeepSeek Harness (dsh): nine /aegis-* skills over the Propose → Apply → Archive lifecycle, registered natively with ctx.skills",
   "keywords": [

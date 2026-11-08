@@ -110,21 +110,21 @@ qodercli plugin install aegis@aegisharness-marketplace
 
 **DeepSeek Harness (dsh)**（preview）
 
-插件根同时就是 npm 包 `@elierncn/aegisharness-dsh` 的包根：`package.json` 用 `dsh.bundle.patch` 声明 patch 层，`lib/index.js` 通过 `ctx.skills` 把九个命令注册成运行时 Skill。因此安装就是 DSH 自己的插件管理，不往 `$DSH_HOME/skills` 拷文件。
+插件根同时就是 npm 包 `@eliterncn/aegisharness-dsh` 的包根：`package.json` 用 `dsh.bundle.patch` 声明 patch 层，`lib/index.js` 通过 `ctx.skills` 把九个命令注册成运行时 Skill。因此安装就是 DSH 自己的插件管理，不往 `$DSH_HOME/skills` 拷文件。
 
 ```bash
 # 1) 安装 CLI（Node.js 22.19+ / 24+）
 npm install -g @deepseek-ai/dsh
 
 # 2) 安装 bundle；dsh 会把它写进 profile 的 dsh.profile.bundles
-dsh plugin --profile web add @elierncn/aegisharness-dsh
+dsh plugin --profile web add @eliterncn/aegisharness-dsh
 
 # 3) 确认组合树含该条目，再启动并新开会话
 dsh --profile web --dump-config | grep -A1 aegisharness
 dsh web
 ```
 
-> `@elierncn/aegisharness-dsh` 尚未在 npm 公开发布。首次发布前，把上面第 2 步换成 `file:` 本地路径安装：`dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`。
+> `@eliterncn/aegisharness-dsh` 尚未在 npm 公开发布。首次发布前，把上面第 2 步换成 `file:` 本地路径安装：`dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`。
 
 DSH 的 Skill 名只接受 kebab-case，因此 `/aegis:init` 在本宿主以 `/aegis-init` 触发。`file:` 开发者安装、skills 目录兜底方案与完整命令映射见 [dsh 安装说明](aegisharness/hosts/deepseek-dsh/installer.md)。
 

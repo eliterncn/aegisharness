@@ -110,21 +110,21 @@ The desktop client can register the same repository through its plugin marketpla
 
 **DeepSeek Harness (dsh)** (preview)
 
-The plugin root is also the npm package `@elierncn/aegisharness-dsh`: its `package.json` declares a `dsh.bundle.patch` layer, and `lib/index.js` registers the nine commands as runtime skills with `ctx.skills`. Installation is therefore DSH's own plugin management — no files are copied into `$DSH_HOME/skills`.
+The plugin root is also the npm package `@eliterncn/aegisharness-dsh`: its `package.json` declares a `dsh.bundle.patch` layer, and `lib/index.js` registers the nine commands as runtime skills with `ctx.skills`. Installation is therefore DSH's own plugin management — no files are copied into `$DSH_HOME/skills`.
 
 ```bash
 # 1) CLI (Node.js 22.19+ / 24+)
 npm install -g @deepseek-ai/dsh
 
 # 2) Install the bundle; dsh appends it to the profile's dsh.profile.bundles
-dsh plugin --profile web add @elierncn/aegisharness-dsh
+dsh plugin --profile web add @eliterncn/aegisharness-dsh
 
 # 3) Confirm the composed tree contains the entry, then start a new session
 dsh --profile web --dump-config | grep -A1 aegisharness
 dsh web
 ```
 
-> `@elierncn/aegisharness-dsh` is not on npm yet. Before the first publish, replace step 2 with the `file:` local install: `dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`.
+> `@eliterncn/aegisharness-dsh` is not on npm yet. Before the first publish, replace step 2 with the `file:` local install: `dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`.
 
 Inside DSH, `/aegis:init` is triggered as `/aegis-init` because Skill names are kebab-case. See the [dsh installer](aegisharness/hosts/deepseek-dsh/installer.md) for the `file:` developer install, the skills-directory fallback and the full command mapping.
 

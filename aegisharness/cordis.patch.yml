@@ -5,4 +5,4 @@
 # nine /aegis-* skills with `ctx.skills`; it declares no other service.
 - insert:
     - id: aegisharness
-      name: '@elierncn/aegisharness-dsh'
+      name: '@eliterncn/aegisharness-dsh'

@@ -65,7 +65,7 @@ After installation, confirm the nine commands and the `qoder.md` project instruc
 Requirements: Node.js 22.19+ (or 24+), npm/npx, Python 3.10+, Git. DSH is a
 **developer preview** — check `--dump-config` rather than assuming a directory layout.
 
-The plugin root is the npm package `@elierncn/aegisharness-dsh`:
+The plugin root is the npm package `@eliterncn/aegisharness-dsh`:
 `package.json` declares `dsh.bundle.patch` → `cordis.patch.yml`, and that patch
 mounts `lib/index.js`, which registers the nine commands as runtime skills with
 `ctx.skills`. Installation is DSH's own plugin management; nothing is copied into
@@ -77,7 +77,7 @@ npm install -g @deepseek-ai/dsh
 
 # 2) Install the bundle; dsh resolves it into the profile and appends it to
 #    dsh.profile.bundles
-dsh plugin --profile web add @elierncn/aegisharness-dsh
+dsh plugin --profile web add @eliterncn/aegisharness-dsh
 
 # 3) Confirm the composed profile contains the entry, then restart dsh
 dsh --profile web --dump-config | grep -A1 aegisharness

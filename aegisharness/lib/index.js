@@ -7,7 +7,7 @@
  * `hosts/deepseek-dsh/skills/_/SKILL.md` shims, and every relative resource the body
  * mentions resolves against the installed package root instead of the workspace.
  *
- * @module @elierncn/aegisharness-dsh
+ * @module @eliterncn/aegisharness-dsh
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
