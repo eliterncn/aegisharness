@@ -110,30 +110,21 @@ qodercli plugin install aegis@aegisharness-marketplace
 
 **DeepSeek Harness (dsh)**（preview）
 
-DSH 没有插件市场：`dsh plugin ... add` 要求目标是 npm 包。本版本通过 DSH 原生的 Skill 发现机制与项目 `AGENTS.md` 指令文件安装。
+插件根同时就是 npm 包 `@elierncn/aegisharness-dsh` 的包根：`package.json` 用 `dsh.bundle.patch` 声明 patch 层，`lib/index.js` 通过 `ctx.skills` 把九个命令注册成运行时 Skill。因此安装就是 DSH 自己的插件管理，不往 `$DSH_HOME/skills` 拷文件。
 
 ```bash
 # 1) 安装 CLI（Node.js 22.19+ / 24+）
 npm install -g @deepseek-ai/dsh
 
-# 2) 取得插件源码
-export AEGISHARNESS_SOURCE="https://github.com/elierncn/aegisharness.git"
-git clone "$AEGISHARNESS_SOURCE" "$HOME/aegisharness"
+# 2) 安装 bundle；dsh 会把它写进 profile 的 dsh.profile.bundles
+dsh plugin --profile web add @elierncn/aegisharness-dsh
 
-# 3) 把九个 Skill 薄入口挂到 DSH 的全局 skills 目录
-DSH_SKILLS="${DSH_HOME:-$HOME/.dsh}/skills"
-mkdir -p "$DSH_SKILLS"
-for c in init propose apply archive bug-fix ut update status config; do
-  ln -sfn "$HOME/aegisharness/aegisharness/hosts/deepseek-dsh/skills/aegis-$c" \
-    "$DSH_SKILLS/aegis-$c"
-done
-
-# 4) 核对当前 profile 的实际配置，再启动并新开会话
-npx @deepseek-ai/dsh --profile web --dump-config
-npx @deepseek-ai/dsh web
+# 3) 确认组合树含该条目，再启动并新开会话
+dsh --profile web --dump-config | grep -A1 aegisharness
+dsh web
 ```
 
-DSH 的 Skill 名只接受 kebab-case，因此 `/aegis:init` 在本宿主以 `/aegis-init` 触发。完整映射与可选的 npm 插件路径见 [dsh 安装说明](aegisharness/hosts/deepseek-dsh/installer.md)。
+DSH 的 Skill 名只接受 kebab-case，因此 `/aegis:init` 在本宿主以 `/aegis-init` 触发。`file:` 开发者安装、skills 目录兜底方案与完整命令映射见 [dsh 安装说明](aegisharness/hosts/deepseek-dsh/installer.md)。
 
 **无论哪个宿主**，若同一终端存在多个宿主的运行时标记，请显式绑定 Host Context：
 

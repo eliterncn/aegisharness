@@ -14,6 +14,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
+# npm packaging output
+*.tgz
+
 # Runtime and acceptance output do not belong in the plugin distribution
 /.aegisharness/
 /output/

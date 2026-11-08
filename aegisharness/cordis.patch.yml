@@ -1,0 +1,8 @@
+# AegisHarness bundle layer for DeepSeek Harness.
+#
+# Mounted by `dsh` when this package is listed in the profile's
+# `dsh.profile.bundles`. The single entry inserts the plugin that registers the
+# nine /aegis-* skills with `ctx.skills`; it declares no other service.
+- insert:
+    - id: aegisharness
+      name: '@elierncn/aegisharness-dsh'

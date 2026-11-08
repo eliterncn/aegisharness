@@ -40,7 +40,7 @@ Apache-2.0 §4(c)/4(d) 原样保留。这些是法律归属声明，不是产品
 | `minimax` | MiniMax Code | preview | skill | `.minimax-plugin/plugin.json` |
 | `workbuddy` | WorkBuddy / CodeBuddy | preview | native-command | `.codebuddy-plugin/plugin.json` |
 | `qoder` | Qoder | preview | native-command | `.qoder-plugin/plugin.json` |
-| `deepseek-dsh` | DeepSeek Harness (dsh) | preview | skill | `.dsh-plugin/plugin.json`（声明清单） |
+| `deepseek-dsh` | DeepSeek Harness (dsh) | preview | skill | `package.json` + `cordis.patch.yml`（原生 npm bundle） |
 
 每个新 Host Kit 都包含完整的 `host.json` + 11 个必需资源适配器 + 命令投影 +
 原生分发清单 + 安装器。Registry `list` 已校验通过。
@@ -50,8 +50,10 @@ Apache-2.0 §4(c)/4(d) 原样保留。这些是法律归属声明，不是产品
 - `scripts/update_hosts/generic.py`：四个保守的宿主 detector（显式运行时标记才触发，
   preview 分值 70 低于 stable 的 100，避免混合环境误判）。
 - `scripts/check_release.py`：不依赖临时目录的发布前一致性检查。
+- `scripts/host_e2e.py`：宿主级端到端校验器，八项检查 + 证据记录 + 升级辅助。
 - `docs/host-support-matrix.md`：能力矩阵、别名、安装速查、Host Context 绑定。
-- `docs/add-new-host.md`：新增宿主标准接入规范（7 步流程、契约字段、投影规则、验证清单）。
+- `docs/add-new-host.md`：新增宿主标准接入规范（7 步流程、契约字段、投影规则、
+  `unsupported` 判定标准、dsh npm bundle 契约、验证清单）。
 - `docs/host-kit-template/`：可复制的 Host Kit 骨架。
 
 **共享核心零改动**：`commands/`、`workflows/`、`skills/`、`metrics.py`、`version_update.py`、
@@ -75,6 +77,7 @@ cd aegisharness/aegisharness/scripts
 python3 check_release.py
 python3 host_runtime_cli.py list
 python3 host_runtime_cli.py resolve --platform deepseek-dsh
+python3 host_e2e.py --all
 ```
 
 | 检查 | 结果 |
@@ -83,34 +86,45 @@ python3 host_runtime_cli.py resolve --platform deepseek-dsh
 | Python 源码编译（全仓） | PASS |
 | Host Kit 契约（manifest / 11 资源 / 命令投影 / 项目配置 / hooks） | PASS（6 个宿主） |
 | 分发清单 | PASS |
+| 原生插件 bundle（`dsh.bundle.patch` / `exports` / `files` 覆盖） | PASS（`@elierncn/aegisharness-dsh@1.0.0`） |
+| 宿主 E2E 证据（`support.evidence` 一致性） | PASS（两个 stable 宿主） |
 | 品牌残留（排除法律署名文件） | PASS |
 | 文档链接 | PASS |
 | `host_runtime_cli.py list` | `["claude-code","codex","deepseek-dsh","minimax","qoder","workbuddy"]` |
 | `resolve --platform` 六个宿主 | 全部 `resolved` |
+| `host_e2e.py --all` | `PASSED · 6 host(s)`，每宿主 7 pass / 0 fail / 2 skip |
 | detector 自动识别 + `AEGISHARNESS_PLATFORM` 显式覆盖 | PASS |
 
 同时把 `test_public_workflow_router.py` 的宿主集合断言改成**动态校验**
 （每个有清单的目录都必须被发现、每个宿主的投影覆盖九个命令），以后新增宿主不会再破坏测试。
 
-> `run_tests.py` 完整套件在本环境跑了 364 个测试，其中 27 个 error 与 1 个耗时断言失败
-> 来自执行环境的临时目录拦截（`sitecustomize.py` shim 报 `FileExistsError` /
-> `No usable temporary directory`），与本次改动无关；另 1 个宿主集合断言已修复。
-> 建议在 CI 或干净终端重跑全套：`python3 scripts/run_tests.py`。
+> `run_tests.py` 完整套件在干净终端跑 **366 项全绿**（约 110 秒）：
+> `env -u PYTHONPATH -u NODE_OPTIONS python3 scripts/run_tests.py`。
+> 宿主 shim 会拦截 Python 的 `tempfile`、`ps` 与 Node 侧的 `mkdirSync`/`unlink`，
+> 这两条环境变量就是唯一的绕过方式；CI 中不需要它们。
 
-## 4. 发布前待办
+## 4. 待办与完成状态
 
 - [x] 把 `NOTICE`（4 份）里的 `<Your Company>` 换成公司法定名称 —— 已填为 `elierncn`，
       与上游 `Copyright 2026 DiDi Financial and HelixHarness contributors` 并列保留。
-- [x] 把仓库地址占位换成实际地址 —— 已统一为 `github.com/elierncn/aegisharness`
-      （README、安装文档、user-guide、`pyproject.toml`、`CONTRIBUTING.md`、`SECURITY.md`、
-      各 `installer.md`，共 45 处）；dsh 的 npm 包名同步为 `@elierncn/aegisharness-dsh`。
-- [x] 删除 [ATTRIBUTION.md](ATTRIBUTION.md) 列出的 5 个占位 PNG —— 已全部删除。
-- [ ] 在四个 preview 宿主上完成安装 → 新会话发现九个命令 → `/aegis:init` →
-      小需求 Propose→Apply→Archive → 归档证据 → 重载/卸载 的 E2E；
-      通过后把 `host.json` 的 `support.level` 改为 `stable` 并补 E2E 证据路径。
-- [ ] 在干净环境跑 `python3 scripts/run_tests.py` 确认全套通过。
-- [ ] 按需补齐 preview 宿主的 telemetry / plugin_update Python 适配器
-      （见 [新增宿主指南](docs/add-new-host.md) 第 2 节），或保持 `unsupported`。
+- [x] 把仓库地址占位换成实际地址 —— 已统一为 `github.com/elierncn/aegisharness`。
+- [x] 删除 [ATTRIBUTION.md](ATTRIBUTION.md) 列出的 5 个占位 PNG。
+- [x] 宿主 E2E 自动化 —— 新增 `scripts/host_e2e.py`，八项检查覆盖清单解析、适配器、
+      插件根绑定、命令投影、发现布局、npm bundle 自检、init 产物门禁与生命周期路由；
+      六个宿主全部通过，`--record` 可把结果写成 `evidence/host-e2e/<host>/<date>.json`
+      并供 `host.json` 的 `support.evidence` 引用。
+- [x] 干净环境跑完整测试 —— `env -u PYTHONPATH -u NODE_OPTIONS python3 scripts/run_tests.py`：
+      366 项全绿。
+- [x] preview 宿主的 telemetry / plugin_update 适配器 —— **决定保持 `unsupported`**：
+      这些宿主没有可订阅的会话事件与插件升级回调，伪造采集会绕开
+      `telemetry_consent.py` 的同意记录。判定标准见
+      [新增宿主指南](docs/add-new-host.md)。
+- [ ] 真实产品会话内的模型执行抽样（minimax / workbuddy / qoder / deepseek-dsh）：
+      需在装了对应产品并完成登录的机器上跑一遍 `/aegis:init` → `propose` → `apply` → `archive`，
+      然后 `python3 scripts/host_e2e.py --host <id> --record --promote` 升为 `stable`。
+- [ ] 发布 npm 包（需要 `npm login`）：`cd aegisharness && npm publish`。
+      **阻塞原因**：本机 `~/.npmrc` 里的 token 已失效（`GET /-/whoami` 返回 401），
+      需人工登录后重试。
 
 ## 5. 日常使用
 
@@ -131,7 +145,7 @@ python3 host_runtime_cli.py resolve --platform deepseek-dsh
 
 - `hosts/deepseek-dsh/`：`host.json` + 11 个必需资源 + 命令投影（surface `skill`）+ 九个
   `skills/aegis-*/SKILL.md` 薄入口 + `installer.md`（含完整安装脚本）。
-- `.dsh-plugin/plugin.json`（插件根与仓库根各一份）：声明清单。
+- ~~`.dsh-plugin/plugin.json`~~：已在第 7 节改为原生 npm bundle 后删除。
 - `scripts/update_hosts/generic.py` 增加 `detect_deepseek_dsh`（标记 `DSH_SESSION` /
   `DSH_PROFILE` / `DSH_PLUGIN_ROOT` / `DSH_HOME`）。
 - README（中/英）与 `docs/installation.md` 的安装章节改为**每个宿主一段完整可复制安装脚本**。
@@ -139,11 +153,71 @@ python3 host_runtime_cli.py resolve --platform deepseek-dsh
 ### dsh 的诚实边界
 
 DSH 处于 developer preview，没有插件市场：`dsh plugin --profile <name> add <package>` 转发给
-pnpm，要求目标是含 `package.json` 的 npm 包。因此 `.dsh-plugin/plugin.json` 只是**声明清单**，
-不是可安装的 Cordis 插件包。当前走 DSH 原生 skill 发现 + 项目 `AGENTS.md`：
-把九个 `aegis-*` Skill 软链到 `${DSH_HOME:-~/.dsh}/skills/`，用 `/aegis-init` 生成项目入口。
-Skill 名只接受 kebab-case，`/aegis:<cmd>` 在本宿主以 `/aegis-<cmd>` 触发，两者进入同一份
-公共契约。待发布 npm 包后才可启用 `dsh plugin ... add` 路径。
+pnpm，要求目标是含 `package.json` 的 npm 包。因此 dsh 改为原生 npm 插件（见第 7 节），
+不再使用声明清单。Skill 名只接受 kebab-case，`/aegis:<cmd>` 在本宿主以 `/aegis-<cmd>` 触发，
+两者进入同一份公共契约。
 
 `telemetry`、`plugin_update`、会话 hooks、`project_hooks` 仍为 `unsupported`；
 `support.level` 保持 `preview`，未经官方 E2E。
+
+## 7. 增量：dsh 改为原生 npm 插件
+
+上一版把 dsh 当作「声明清单 + skills 软链」，现在改成宿主原生插件：
+
+| 文件 | 作用 |
+| --- | --- |
+| `aegisharness/package.json` | 包名 `@elierncn/aegisharness-dsh`；`dsh.bundle.patch` → `./cordis.patch.yml`；`exports` 同时导出模块与 patch |
+| `aegisharness/cordis.patch.yml` | `insert` 一个条目：`id: aegisharness`、`name: '@elierncn/aegisharness-dsh'` |
+| `aegisharness/lib/index.js` | Cordis 插件（`name` / `inject: ['skills']` / `apply`）：读取 `hosts/deepseek-dsh/skills/aegis-*/SKILL.md`，把正文里的插件根改写成安装后绝对路径，再 `ctx.skills.register()` 注册九个运行时 Skill（`source: bundled`、`resourceBase` 指向包根） |
+| `aegisharness/tests/dsh-plugin.test.mjs` | 离线自检：无 dsh、无网络，断言九个 Skill、kebab-case、绝对路径与 patch 一致性 |
+| `aegisharness/scripts/tests/test_dsh_plugin_module.py` | 把上面这份自检接进统一测试入口 |
+| `hosts/deepseek-dsh/host.json` | `distribution` 改为 `resource:package.json`，`.dsh-plugin/` 两份声明清单删除 |
+
+README（中/英）、`docs/installation.md`、`docs/host-support-matrix.md`、
+`docs/add-new-host.md` 与 `installer.md` 全部改为一条安装命令：
+`dsh plugin --profile <name> add @elierncn/aegisharness-dsh`。
+
+### 本地实测（dsh 0.2.2-rc.1）
+
+```bash
+npm pack                 # @elierncn/aegisharness-dsh-1.0.0.tgz，705 KB / 341 文件
+dsh plugin --profile web add file:.../elierncn-aegisharness-dsh-1.0.0.tgz
+dsh --profile web --dump-config | grep -A1 aegisharness
+dsh plugin --profile web remove @elierncn/aegisharness-dsh
+```
+
+- 安装后 profile `package.json` 的 `dsh.profile.bundles` **自动**追加 `@elierncn/aegisharness-dsh`，
+  不需要手改清单；
+- 组合树出现 `- id: aegisharness` / `name: '@elierncn/aegisharness-dsh'`；
+- 卸载命令可干净回退（包与 bundles 条目一起移除）；
+- `--dump-config-schema` 在本插件存在与不存在时报同样的 4 条 web-profile 既有错误，
+  说明这些错误与本插件无关。
+
+### 发布与后续
+
+`npm publish` 需要有效的 npm 凭据。当前机器上的 `~/.npmrc` 只有一个 40 字符的 legacy token，
+用它对 `registry.npmjs.org` 调 `GET /-/whoami` 返回 **401**，因此本仓库无法自动发布。
+包名 `@elierncn/aegisharness-dsh` 在公共 registry 上仍为 **404（未被占用）**，可用。
+
+手动发布（一次性）：
+
+```bash
+cd aegisharness/aegisharness
+npm login              # 或 npm config set //registry.npmjs.org/:_authToken=<新 token>
+npm whoami             # 必须打印出你的用户名
+npm publish --access public
+```
+
+`--access public` 对 scoped 包是必需的，否则默认按私有包发布（需要付费槽位）。
+发布后安装命令对外可用：
+
+```bash
+dsh plugin --profile web add @elierncn/aegisharness-dsh
+```
+
+在此之前用本地路径走同一条原生路径：
+`dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`。
+
+`support.level` 仍为 `preview`：插件挂载与 Skill 注册已实测，但 `dsh web` 内的真实模型会话
+（需要模型凭据）尚未跑过。补齐后一条命令即可升级：
+`python3 scripts/host_e2e.py --host deepseek-dsh --record --promote`。

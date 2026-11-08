@@ -65,47 +65,45 @@ After installation, confirm the nine commands and the `qoder.md` project instruc
 Requirements: Node.js 22.19+ (or 24+), npm/npx, Python 3.10+, Git. DSH is a
 **developer preview** — check `--dump-config` rather than assuming a directory layout.
 
-DSH has no plugin marketplace: `dsh plugin --profile <name> add <package>` forwards to
-pnpm and requires an npm package with `package.json`. Our `.dsh-plugin/plugin.json` is a
-declarative projection manifest, not an installable Cordis plugin. This release therefore
-installs via DSH's native skill discovery plus the project `AGENTS.md` instruction file.
+The plugin root is the npm package `@elierncn/aegisharness-dsh`:
+`package.json` declares `dsh.bundle.patch` → `cordis.patch.yml`, and that patch
+mounts `lib/index.js`, which registers the nine commands as runtime skills with
+`ctx.skills`. Installation is DSH's own plugin management; nothing is copied into
+`$DSH_HOME/skills`.
 
 ```bash
 # 1) CLI
 npm install -g @deepseek-ai/dsh
 
-# 2) Source checkout
-export AEGISHARNESS_SOURCE="https://github.com/elierncn/aegisharness.git"
-git clone "$AEGISHARNESS_SOURCE" "$HOME/aegisharness"
+# 2) Install the bundle; dsh resolves it into the profile and appends it to
+#    dsh.profile.bundles
+dsh plugin --profile web add @elierncn/aegisharness-dsh
 
-# 3) Mount the nine Skill entrypoints (bundle layout: <name>/SKILL.md)
-DSH_SKILLS="${DSH_HOME:-$HOME/.dsh}/skills"
-mkdir -p "$DSH_SKILLS"
-for c in init propose apply archive bug-fix ut update status config; do
-  ln -sfn "$HOME/aegisharness/aegisharness/hosts/deepseek-dsh/skills/aegis-$c" \
-    "$DSH_SKILLS/aegis-$c"
-done
-
-# 4) Inspect the composed profile, then restart into a new session
-npx @deepseek-ai/dsh --profile web --dump-config
-npx @deepseek-ai/dsh web
+# 3) Confirm the composed profile contains the entry, then restart dsh
+dsh --profile web --dump-config | grep -A1 aegisharness
+dsh web
 ```
 
-Project-scoped alternative: link the same nine directories into `<repo>/.dsh/skills/`.
-DSH reads `<repo>/AGENTS.md` (`instructionFileCandidates` defaults to
-`['AGENTS.md','CLAUDE.md']`) and `${DSH_HOME:-~/.dsh}/AGENTS.md` globally.
+Before the package is published to npm, use the same native path with a local
+checkout (`dsh plugin --profile web add "file:$HOME/aegisharness/aegisharness"`).
+Without npm access at all, DSH still discovers `<repo>/.dsh/skills/`,
+`${DSH_HOME:-~/.dsh}/skills/` and `~/.agents/skills/` bundles, so the nine thin
+entrypoints can be linked there instead; DSH reads `<repo>/AGENTS.md`
+(`instructionFileCandidates` defaults to `['AGENTS.md','CLAUDE.md']`) and
+`${DSH_HOME:-~/.dsh}/AGENTS.md` globally.
 
 Skill names are kebab-case, so `/aegis:init` is triggered as `/aegis-init` in DSH.
 Both spellings enter the same shared `commands/init.md` contract. Full mapping,
-the `dsh plugin ... add <npm-package>` path (available only after publishing an npm
-package), update and uninstall steps: [dsh installer](../aegisharness/hosts/deepseek-dsh/installer.md).
+the `file:` developer install, the skills-directory fallback, update and uninstall
+steps: [dsh installer](../aegisharness/hosts/deepseek-dsh/installer.md).
 
 The repository root contains `.claude-plugin/marketplace.json`, whose `./aegisharness`
 source points to the plugin. Each host reads its own native manifest
-(`.codex-plugin/`, `.minimax-plugin/`, `.codebuddy-plugin/`, `.qoder-plugin/`,
-`.dsh-plugin/`); see the [host support matrix](host-support-matrix.md). The platform
-is not installed by these commands. Preview hosts do not install hooks, telemetry or
-automatic updates.
+(`.codex-plugin/`, `.minimax-plugin/`, `.codebuddy-plugin/`, `.qoder-plugin/`); DSH
+reads the plugin's own npm `package.json` bundle declaration
+(`aegisharness/package.json`). See the [host support matrix](host-support-matrix.md).
+The platform is not installed by these commands. Preview hosts do not install hooks,
+telemetry or automatic updates.
 
 ### Bind the Host Context
 
@@ -163,14 +161,9 @@ qodercli plugin install aegis@aegisharness-marketplace
 ```
 
 ```bash
-# DeepSeek Harness / dsh (preview) — no marketplace, mount Skills directly
-DSH_SKILLS="${DSH_HOME:-$HOME/.dsh}/skills"
-mkdir -p "$DSH_SKILLS"
-for c in init propose apply archive bug-fix ut update status config; do
-  ln -sfn "$AEGISHARNESS_SOURCE/aegisharness/hosts/deepseek-dsh/skills/aegis-$c" \
-    "$DSH_SKILLS/aegis-$c"
-done
-npx @deepseek-ai/dsh --profile web --dump-config
+# DeepSeek Harness / dsh (preview) — native bundle from the local checkout
+dsh plugin --profile web add "file:$AEGISHARNESS_SOURCE/aegisharness"
+dsh --profile web --dump-config | grep -A1 aegisharness
 ```
 
 A standalone plugin copy can still use the absolute path to `aegisharness/`; its nested marketplace points to `.`. Register only one source under `aegisharness-marketplace` at a time. When switching sources, remove the old marketplace using the host's plugin management first.

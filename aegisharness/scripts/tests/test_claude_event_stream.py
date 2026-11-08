@@ -102,8 +102,28 @@ time.sleep(30)
                 self.assertTrue(evidence["timed_out"])
                 self.assertLess(evidence["seconds"], 8)
                 child = int((folder / "child.pid").read_text())
-                state = subprocess.run(["ps", "-o", "stat=", "-p", str(child)], capture_output=True, text=True).stdout.strip()
-                self.assertTrue(not state or state.startswith("Z"), state)
+                # `ps` is not guaranteed: minimal images and restricted executors
+                # may not ship or allow it. Fall back to a direct liveness probe so
+                # the assertion still catches the bug it guards: an orphan that
+                # keeps the pipe open because the timeout never killed the group.
+                try:
+                    probe = subprocess.run(
+                        ["ps", "-o", "stat=", "-p", str(child)],
+                        capture_output=True, text=True,
+                    )
+                except (OSError, subprocess.SubprocessError):
+                    probe = None
+                if probe is not None:
+                    state = probe.stdout.strip()
+                    self.assertTrue(not state or state.startswith("Z"), state)
+                else:
+                    try:
+                        os.kill(child, 0)
+                    except ProcessLookupError:
+                        alive = False
+                    else:
+                        alive = True
+                    self.assertFalse(alive, "descendant survived the timeout without `ps` to confirm a zombie state")
             finally:
                 if (folder / "child.pid").exists():
                     try:

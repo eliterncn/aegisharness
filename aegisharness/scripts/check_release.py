@@ -142,6 +142,64 @@ def distribution_manifests() -> None:
                 raise ValueError(f"{manifest.host_id} repository-root manifest has no name")
 
 
+def native_bundles() -> None:
+    """Validate packages that a host installs as a native plugin bundle."""
+    registry = HostRegistry.discover(HOSTS_ROOT)
+    found = []
+    for manifest in registry.manifests():
+        path = manifest.resolve_resource_adapter("distribution")
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            continue
+        bundle = (payload.get("dsh") or {}).get("bundle")
+        if not isinstance(bundle, dict):
+            continue
+        patch_rel = bundle.get("patch")
+        if not isinstance(patch_rel, str) or not patch_rel:
+            raise ValueError(f"{manifest.host_id} bundle patch is not declared")
+        package_root = path.parent
+        patch = package_root / patch_rel
+        if not patch.is_file():
+            raise ValueError(f"{manifest.host_id} bundle patch missing: {patch_rel}")
+        patch_text = patch.read_text(encoding="utf-8")
+        if payload.get("name") not in patch_text:
+            raise ValueError(f"{manifest.host_id} bundle patch does not mount {payload.get('name')}")
+        exports = payload.get("exports") or {}
+        if patch_rel.lstrip("./") not in {str(key).lstrip("./") for key in exports}:
+            raise ValueError(f"{manifest.host_id} bundle patch is not exported: {patch_rel}")
+        main = payload.get("main")
+        if not isinstance(main, str) or not (package_root / main).is_file():
+            raise ValueError(f"{manifest.host_id} bundle main module missing: {main}")
+        files = [str(item).lstrip("./") for item in payload.get("files") or []]
+        for required in (patch_rel.lstrip("./"), main.lstrip("./")):
+            # A directory entry such as "lib" covers everything beneath it.
+            if not any(required == entry or required.startswith(entry.rstrip("/") + "/") for entry in files):
+                raise ValueError(f"{manifest.host_id} bundle omits {required} from files")
+        found.append(f"{payload['name']}@{payload.get('version')}")
+    if found:
+        print(f"       bundles: {', '.join(found)}")
+
+
+def host_evidence() -> None:
+    """A declared E2E evidence path must exist and still describe this host."""
+    registry = HostRegistry.discover(HOSTS_ROOT)
+    declared = []
+    for manifest in registry.manifests():
+        if manifest.evidence is None:
+            continue
+        path = REPO_ROOT / manifest.evidence
+        if not path.is_file():
+            raise ValueError(f"{manifest.host_id} evidence missing: {manifest.evidence}")
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if payload.get("host_id") != manifest.host_id:
+            raise ValueError(f"{manifest.host_id} evidence names a different host")
+        if payload.get("status") != "pass":
+            raise ValueError(f"{manifest.host_id} evidence status is {payload.get('status')!r}")
+        declared.append(manifest.host_id)
+    if declared:
+        print(f"       evidence: {', '.join(sorted(declared))}")
+
+
 def branding_residue() -> None:
     hits = []
     for path in repo_files():
@@ -189,6 +247,8 @@ def main() -> int:
     check("Python sources compile", errors, python_syntax)
     check("Host Kit contracts", errors, host_kits)
     check("distribution manifests", errors, distribution_manifests)
+    check("native plugin bundles", errors, native_bundles)
+    check("host E2E evidence", errors, host_evidence)
     check("branding residue (excluding attribution files)", errors, branding_residue)
     check("documentation links", errors, documentation_links)
     print()

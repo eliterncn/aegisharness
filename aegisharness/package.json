@@ -1,0 +1,64 @@
+{
+  "name": "@elierncn/aegisharness-dsh",
+  "version": "1.0.0",
+  "description": "AegisHarness for DeepSeek Harness (dsh): nine /aegis-* skills over the Propose → Apply → Archive lifecycle, registered natively with ctx.skills",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "coding-agent",
+    "workflow",
+    "aegisharness"
+  ],
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "tests/dsh-plugin.test.mjs",
+    "cordis.patch.yml",
+    "SKILL.md",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md",
+    "commands",
+    "agents",
+    "hosts",
+    "reference",
+    "templates",
+    "workflows",
+    "skills",
+    "scripts/*.py",
+    "scripts/host_runtime/*.py",
+    "scripts/update_hosts/*.py"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elierncn/aegisharness.git",
+    "directory": "aegisharness"
+  },
+  "homepage": "https://github.com/elierncn/aegisharness#readme",
+  "bugs": {
+    "url": "https://github.com/elierncn/aegisharness/issues"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0"
+  }
+}

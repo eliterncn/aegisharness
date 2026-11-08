@@ -27,8 +27,8 @@
 3. **写 `host.json`**：按第 2 节声明能力；能力不足时如实写 `unsupported`，不要伪装。
 4. **补齐 11 个必需资源**：见第 3 节。所有 `resource:` 引用的文件必须真实存在。
 5. **做命令投影**：见第 4 节；九个命令一个都不能少。
-6. **加原生分发清单与安装器**：`.{host}-plugin/plugin.json`（或 marketplace 入口），
-   仓库根与插件根各一份，并在 `installer.md` 写清安装、重载、验证、更新与卸载。
+6. **加原生分发清单与安装器**：`.{host}-plugin/plugin.json`、marketplace 入口或 npm bundle
+   （见第 6 节），仓库根与插件根各一份，并在 `installer.md` 写清安装、重载、验证、更新与卸载。
 7. **验证并更新文档**：见第 7 节；更新支持矩阵、README 与版本元数据，在目标客户端跑 E2E。
 
 ## 2. `host.json` 契约
@@ -176,6 +176,30 @@
 要求：`capabilities.project_hooks == "unsupported"`、两个文件里的 `settings_file` 都是 null。
 此时质量检查通过 `docs/hooks/` 清单与公共命令的检查点显式执行。
 
+## 5b. 能力保持 `unsupported` 的判定标准
+
+`unsupported` 是**契约承诺**，不是"暂时没做"的占位。它会让 `project_hooks` 走清单兜底路径、
+让 `subagent_protocol` 退化为提示词约定。下面四项**同时满足**才允许标 `unsupported`：
+
+| # | 判定条件 | 检查方式 |
+| --- | --- | --- |
+| 1 | 宿主确实没有对应的事件 / 扩展点 | 官方文档或 `--help` / schema 中不存在，且**不是**你尚未调研 |
+| 2 | 没有明确的第三方声明载体 | 无插件清单字段、无配置文件可写、无 API 可调用 |
+| 3 | 无法通过受支持的回调间接实现 | 不得靠"让模型自己记得做"来伪造能力 |
+| 4 | 无模型凭据的 CI 中也能验证"确实做不到" | `scripts/host_e2e.py` 对应检查项走 `skip` / `unsupported` 分支通过，而非超时失败 |
+
+常见误判：
+
+- 只能写 `AGENTS.md` 之类自由文本 → **不能**承载 hooks（没有结构化去重键），判 `unsupported` 正确；
+  但若宿主支持 `settings.json` 里的 `hooks` 数组，就必须判 `supported`。
+- 宿主有子代理但只能在 UI 里手动点 → `subagent_protocol` 判 `partial`（有载体、无程序化入口），
+  不要直接降到 `unsupported`。
+
+六个宿主的 `project_hooks` 分布可作对照：`claude-code` / `codex` / `qoder` / `workbuddy` 为
+`supported`（有结构化 settings 载体）；`minimax`（无 hooks 扩展点）与 `deepseek-dsh`
+（Cordis 事件尚未暴露跨进程的 hook 声明面）为 `unsupported`，二者的质量检查统一由
+`docs/hooks/` 清单 + 公共命令检查点承担。
+
 ## 6. 原生分发清单
 
 放在插件根 `aegisharness/.{host}-plugin/`，并在仓库根放一份带
@@ -188,11 +212,67 @@
 | MiniMax Code | `.minimax-plugin/plugin.json` | `apps`, `mcpServers`, `skills`（三个数组都要有，可为空） |
 | WorkBuddy / CodeBuddy | `.codebuddy-plugin/plugin.json` | `commands`, `skills`, `agents`, `hooks` |
 | Qoder | `.qoder-plugin/plugin.json` | `skills`, `rules`, `agents`, `commands`, `hooks`, `mcpServers` |
-| DeepSeek Harness / dsh | `.dsh-plugin/plugin.json` | `skills`, `instructions`, `profiles`, `install_mode`（声明清单，非 Cordis npm 包） |
+| DeepSeek Harness / dsh | `package.json`（`dsh.bundle.patch` → `cordis.patch.yml`） | Cordis 插件模块：`name` / `inject` / `apply`，通过 `ctx.skills.register` 注册 Skill |
 
 注册了 hook 能力的宿主，manifest **必须显式声明** `hosts/{host-id}/hooks.json`；
 声明 `session_start` / `session_end` 为 `unsupported` 的宿主不得提供 hooks.json。
 禁止发布根目录默认 `hooks/hooks.json`，以免客户端装载到另一个宿主的入口。
+
+### dsh 原生 npm bundle 契约
+
+dsh 不走 json 清单，而是一个**可发布的 npm 包**。三份文件构成契约：
+
+```json
+{
+  "name": "@elierncn/aegisharness-dsh",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": ["lib", "cordis.patch.yml", "commands", "hosts"],
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
+  "peerDependencies": { "@deepseek-ai/cordis": "~4.1.0" }
+}
+```
+
+```yaml
+# cordis.patch.yml —— insert 自己，不要写死宿主侧路径
+- insert:
+    - id: aegisharness
+      name: '@elierncn/aegisharness-dsh'
+```
+
+```js
+// lib/index.js —— Cordis 插件入口
+export const name = 'aegisharness'
+export const inject = ['skills']
+export function apply(ctx) {
+  for (const skill of collectSkills()) {
+    ctx.skills.register({
+      name: skill.name,               // 必须 kebab-case
+      description: skill.description, // 不可为空，否则 dsh 拒绝加载
+      content: skill.content,
+      source: 'bundled',
+      provider: name,
+      resourceBase: { kind: 'directory', path: PACKAGE_ROOT },
+      invocation: { modelInvocable: true, userInvocable: true },
+    })
+  }
+}
+```
+
+三条硬性约束：
+
+1. `dsh.bundle.patch` 指向的 patch 必须 `insert` **本包自身**，`id` 与 `name` 都要写；
+2. `main` 与 patch 必须被 `files` 覆盖（目录条目如 `"lib"` 合法），否则发布后加载失败；
+3. Skill 正文里的相对路径要在安装时改写成**绝对路径**，因为 dsh 从 profile 的
+   `node_modules/` 里读文件，相对路径会解析到错误的位置。
+
+`scripts/check_release.py` 的 `native plugin bundles` 检查会自动校验第 1、2 条；
+`tests/dsh-plugin.test.mjs`（`node` 直跑，无需 dsh 与网络）校验 Skill 命名、绝对路径与契约文件存在。
 
 ## 7. 验证清单
 
@@ -208,6 +288,9 @@ python3 host_runtime_cli.py resolve --platform new-host
 # 3) 显式覆盖与 detector 自动识别
 AEGISHARNESS_PLATFORM=new-host python3 host_runtime_cli.py resolve
 python3 run_tests.py
+
+# 4) 宿主级 E2E（八项检查，可在无模型凭据的 CI 跑）
+python3 host_e2e.py --host new-host
 ```
 
 `list` 会把 `hosts/*/host.json` 全部载入，任一 manifest 非法会整体失败——
@@ -216,7 +299,11 @@ python3 run_tests.py
 随后在目标客户端完成 E2E：安装 → 新会话发现九个 `/aegis:*` 命令 → `/aegis:init` 生成
 非空 `docs/harness/index.md`、`docs/knowledge/index.md`、`docs/knowledge/project-context.md` →
 跑一个小需求的 Propose → Apply → Archive → 检查 `docs/specs/completed/` 的 Spec/Tasks/验证证据 →
-重载/更新/卸载。通过后把 `support.level` 改为 `stable` 并补 E2E 证据路径。
+重载/更新/卸载。通过后执行：
+
+```bash
+python3 host_e2e.py --host new-host --record --promote   # 写证据并把 support.level 升为 stable
+```
 
 ## 8. 常见错误
 
@@ -230,6 +317,8 @@ python3 run_tests.py
 | `宿主 adapter 不是 Python 引用` | `telemetry` / `plugin_update` 声明启用却指向 resource |
 | `宿主识别冲突` | 两个 detector 返回同分；让 preview 宿主低于 stable，或显式指定 `AEGISHARNESS_PLATFORM` |
 | `plugin_source_mismatch` | 执行副本与会话绑定的插件源不同；核对 marketplace 后新开会话 |
+| `bundle omits lib/index.js from files` | `package.json` 的 `files` 没覆盖 `main` 或 patch |
+| dsh 里看不到 `/aegis:*` | patch 未 `insert` 自身，或 profile 的 `dsh.profile.bundles` 未追加 |
 
 ## 9. 不要做的事
 

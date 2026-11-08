@@ -110,30 +110,21 @@ The desktop client can register the same repository through its plugin marketpla
 
 **DeepSeek Harness (dsh)** (preview)
 
-DSH has no plugin marketplace: `dsh plugin ... add` expects an npm package. This release installs through DSH's native skill discovery plus the project `AGENTS.md` instruction file instead.
+The plugin root is also the npm package `@elierncn/aegisharness-dsh`: its `package.json` declares a `dsh.bundle.patch` layer, and `lib/index.js` registers the nine commands as runtime skills with `ctx.skills`. Installation is therefore DSH's own plugin management — no files are copied into `$DSH_HOME/skills`.
 
 ```bash
 # 1) CLI (Node.js 22.19+ / 24+)
 npm install -g @deepseek-ai/dsh
 
-# 2) Source checkout
-export AEGISHARNESS_SOURCE="https://github.com/elierncn/aegisharness.git"
-git clone "$AEGISHARNESS_SOURCE" "$HOME/aegisharness"
+# 2) Install the bundle; dsh appends it to the profile's dsh.profile.bundles
+dsh plugin --profile web add @elierncn/aegisharness-dsh
 
-# 3) Mount the nine Skill entrypoints into DSH's global skills directory
-DSH_SKILLS="${DSH_HOME:-$HOME/.dsh}/skills"
-mkdir -p "$DSH_SKILLS"
-for c in init propose apply archive bug-fix ut update status config; do
-  ln -sfn "$HOME/aegisharness/aegisharness/hosts/deepseek-dsh/skills/aegis-$c" \
-    "$DSH_SKILLS/aegis-$c"
-done
-
-# 4) Inspect the active profile, then start a new session
-npx @deepseek-ai/dsh --profile web --dump-config
-npx @deepseek-ai/dsh web
+# 3) Confirm the composed tree contains the entry, then start a new session
+dsh --profile web --dump-config | grep -A1 aegisharness
+dsh web
 ```
 
-Inside DSH, `/aegis:init` is triggered as `/aegis-init` because Skill names are kebab-case. See the [dsh installer](aegisharness/hosts/deepseek-dsh/installer.md) for the full mapping and the optional npm-plugin path.
+Inside DSH, `/aegis:init` is triggered as `/aegis-init` because Skill names are kebab-case. See the [dsh installer](aegisharness/hosts/deepseek-dsh/installer.md) for the `file:` developer install, the skills-directory fallback and the full command mapping.
 
 **After any installation**, bind the Host Context explicitly when several hosts share the same terminal:
 
