@@ -15,7 +15,7 @@
 | 命令 `/helix:*`、插件 ID `helix@...` | `/aegis:*`、`aegis@aegisharness-marketplace` |
 | `helixharness.workspace.yaml`、`~/.helixharness/` | `aegisharness.workspace.yaml`、`~/.aegisharness/` |
 | 环境变量 `HELIXHARNESS_*` | `AEGISHARNESS_*` |
-| `github.com/didi/helixharness` | `github.com/elierncn/aegisharness` |
+| `github.com/didi/helixharness` | `github.com/eliterncn/aegisharness` |
 | 目录 `helixharness/`、`helixharness-platform/` | `aegisharness/`、`aegisharness-platform/` |
 
 品牌叙事重写为"Aegis = 守护之盾"，去掉上游的 DNA 双螺旋双关。
@@ -106,9 +106,9 @@ python3 host_e2e.py --all
 
 ## 4. 待办与完成状态
 
-- [x] 把 `NOTICE`（4 份）里的 `<Your Company>` 换成公司法定名称 —— 已填为 `elierncn`，
+- [x] 把 `NOTICE`（4 份）里的 `<Your Company>` 换成公司法定名称 —— 已填为 `eliterncn`，
       与上游 `Copyright 2026 DiDi Financial and HelixHarness contributors` 并列保留。
-- [x] 把仓库地址占位换成实际地址 —— 已统一为 `github.com/elierncn/aegisharness`。
+- [x] 把仓库地址占位换成实际地址 —— 已统一为 `github.com/eliterncn/aegisharness`。
 - [x] 删除 [ATTRIBUTION.md](ATTRIBUTION.md) 列出的 5 个占位 PNG。
 - [x] 宿主 E2E 自动化 —— 新增 `scripts/host_e2e.py`，八项检查覆盖清单解析、适配器、
       插件根绑定、命令投影、发现布局、npm bundle 自检、init 产物门禁与生命周期路由；
@@ -241,7 +241,7 @@ npm publish --access public
 
 1. 打开 `https://www.npmjs.com/package/@eliterncn/aegisharness-dsh` → Settings →
    Trusted Publisher → Add → **GitHub Actions**；
-2. 填 `elierncn` / `aegisharness` / `publish-npm.yml`（只填文件名，带 `.yml`）；
+2. 填 `eliterncn` / `aegisharness` / `publish-npm.yml`（只填文件名，带 `.yml`）；
 3. **Allowed actions 里必须勾上 `npm publish`**——新建配置默认只允许 stage publish，
    不勾就只会把版本暂存，不会真正发布；
 4. 回仓库删掉 `NPM_TOKEN` Secret，之后打 tag 走纯 OIDC。

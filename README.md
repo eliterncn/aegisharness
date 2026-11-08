@@ -70,21 +70,21 @@ Requirements: Python 3.10+, Git and a plugin-capable supported host (see the [ho
 **Codex**
 
 ```bash
-codex plugin marketplace add https://github.com/elierncn/aegisharness.git
+codex plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codex plugin add aegis@aegisharness-marketplace
 ```
 
 **Claude Code**
 
 ```bash
-claude plugin marketplace add https://github.com/elierncn/aegisharness.git
+claude plugin marketplace add https://github.com/eliterncn/aegisharness.git
 claude plugin install aegis@aegisharness-marketplace
 ```
 
 **MiniMax Code** (preview)
 
 ```bash
-mcode plugin marketplace add https://github.com/elierncn/aegisharness.git
+mcode plugin marketplace add https://github.com/eliterncn/aegisharness.git
 mcode plugin install aegis@aegisharness-marketplace
 ```
 
@@ -93,7 +93,7 @@ Commands are projected as Skill entrypoints under `hosts/minimax/skills/`.
 **WorkBuddy / CodeBuddy** (preview)
 
 ```bash
-codebuddy plugin marketplace add https://github.com/elierncn/aegisharness.git
+codebuddy plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codebuddy plugin install aegis@aegisharness-marketplace
 ```
 
@@ -102,7 +102,7 @@ Then run `/reload-plugins` and open a new session.
 **Qoder** (preview)
 
 ```bash
-qodercli plugin marketplace add https://github.com/elierncn/aegisharness.git
+qodercli plugin marketplace add https://github.com/eliterncn/aegisharness.git
 qodercli plugin install aegis@aegisharness-marketplace
 ```
 
@@ -238,7 +238,7 @@ For version evaluation, point the platform at the source Git checkout or a direc
 
 Telemetry is off until the user explicitly enables it. Async reporting and the optional feedback skill have **no default platform address**. Without a configured destination, feedback cannot be sent; the entrypoint remains available. Configuring an endpoint does not authorize sending feedback: the content and destination still require approval.
 
-Report community bugs through [GitHub Issues](https://github.com/elierncn/aegisharness/issues); no platform deployment is required. Follow [SECURITY.md](SECURITY.md) for vulnerabilities. [Data and feedback details](docs/user-guide.md#feedback).
+Report community bugs through [GitHub Issues](https://github.com/eliterncn/aegisharness/issues); no platform deployment is required. Follow [SECURITY.md](SECURITY.md) for vulnerabilities. [Data and feedback details](docs/user-guide.md#feedback).
 
 ## Roadmap
 

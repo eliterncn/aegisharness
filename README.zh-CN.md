@@ -70,21 +70,21 @@ Knowledge 与 Harness 通过索引引导上下文加载，Specs 保存每个需�
 **Codex**
 
 ```bash
-codex plugin marketplace add https://github.com/elierncn/aegisharness.git
+codex plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codex plugin add aegis@aegisharness-marketplace
 ```
 
 **Claude Code**
 
 ```bash
-claude plugin marketplace add https://github.com/elierncn/aegisharness.git
+claude plugin marketplace add https://github.com/eliterncn/aegisharness.git
 claude plugin install aegis@aegisharness-marketplace
 ```
 
 **MiniMax Code**（preview）
 
 ```bash
-mcode plugin marketplace add https://github.com/elierncn/aegisharness.git
+mcode plugin marketplace add https://github.com/eliterncn/aegisharness.git
 mcode plugin install aegis@aegisharness-marketplace
 ```
 
@@ -93,7 +93,7 @@ mcode plugin install aegis@aegisharness-marketplace
 **WorkBuddy / CodeBuddy**（preview）
 
 ```bash
-codebuddy plugin marketplace add https://github.com/elierncn/aegisharness.git
+codebuddy plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codebuddy plugin install aegis@aegisharness-marketplace
 ```
 
@@ -102,7 +102,7 @@ codebuddy plugin install aegis@aegisharness-marketplace
 **Qoder**（preview）
 
 ```bash
-qodercli plugin marketplace add https://github.com/elierncn/aegisharness.git
+qodercli plugin marketplace add https://github.com/eliterncn/aegisharness.git
 qodercli plugin install aegis@aegisharness-marketplace
 ```
 
@@ -236,7 +236,7 @@ python -m web_ui.demo --port 7860
 
 统计需要用户明确开启。异步上报和可选反馈功能**默认没有平台地址**；未配置目的地时保留入口，但不能发送反馈。配置地址不等于同意发送，每次反馈内容和实际目的地仍需授权。
 
-普通社区问题直接提交到 [GitHub Issues](https://github.com/elierncn/aegisharness/issues)，不需要先部署平台。漏洞按[安全政策](SECURITY.md)私密报告。详见[数据与反馈说明](docs/user-guide.zh-CN.md#问题反馈)。
+普通社区问题直接提交到 [GitHub Issues](https://github.com/eliterncn/aegisharness/issues)，不需要先部署平台。漏洞按[安全政策](SECURITY.md)私密报告。详见[数据与反馈说明](docs/user-guide.zh-CN.md#问题反馈)。
 
 ## 路线图
 

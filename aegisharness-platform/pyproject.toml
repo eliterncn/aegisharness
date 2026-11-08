@@ -30,9 +30,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/elierncn/aegisharness"
-Repository = "https://github.com/elierncn/aegisharness"
-Issues = "https://github.com/elierncn/aegisharness/issues"
+Homepage = "https://github.com/eliterncn/aegisharness"
+Repository = "https://github.com/eliterncn/aegisharness"
+Issues = "https://github.com/eliterncn/aegisharness/issues"
 
 [project.optional-dependencies]
 # Claude model backend

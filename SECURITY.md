@@ -7,7 +7,7 @@ Security fixes target the public 1.0.x series. The plugin and platform are cover
 ## Report a vulnerability privately
 
 After this repository is published, use **Security → Advisories → Report a vulnerability**:
-https://github.com/elierncn/aegisharness/security/advisories/new
+https://github.com/eliterncn/aegisharness/security/advisories/new
 
 Private vulnerability reporting must be enabled by the repository administrators before public launch; this source copy does not enable GitHub settings. If the button is unavailable, open an Issue requesting a private reporting channel **without including vulnerability details**.
 

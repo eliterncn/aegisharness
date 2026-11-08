@@ -48,12 +48,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elierncn/aegisharness.git",
+    "url": "git+https://github.com/eliterncn/aegisharness.git",
     "directory": "aegisharness"
   },
-  "homepage": "https://github.com/elierncn/aegisharness#readme",
+  "homepage": "https://github.com/eliterncn/aegisharness#readme",
   "bugs": {
-    "url": "https://github.com/elierncn/aegisharness/issues"
+    "url": "https://github.com/eliterncn/aegisharness/issues"
   },
   "engines": {
     "node": ">=22.19.0"

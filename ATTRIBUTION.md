@@ -44,6 +44,6 @@ aegisharness-platform/web_ui/static/images/evolution-evidence-loop.png
 
 这些文件中出现的上游名称属于**法律归属声明**，不是本产品的品牌标识。产品代码、命令、配置、文档与运行时标识中不再使用上游品牌。
 
-> **署名状态**：`NOTICE`（4 份）中的版权人已填为 `elierncn`，与上游版权行并列保留；
-> 文档与 `pyproject.toml` 中的仓库地址已统一为 `github.com/elierncn/aegisharness`。
+> **署名状态**：`NOTICE`（4 份）中的版权人已填为 `eliterncn`，与上游版权行并列保留；
+> 文档与 `pyproject.toml` 中的仓库地址已统一为 `github.com/eliterncn/aegisharness`。
 > 仓库正式公开后，README 与安装文档里的克隆/PowerShell 命令即可直接使用。

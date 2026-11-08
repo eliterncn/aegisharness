@@ -63,14 +63,14 @@ Run the commands for your coding agent in a terminal. For testing local changes 
 **Codex**
 
 ```bash
-codex plugin marketplace add https://github.com/elierncn/aegisharness.git
+codex plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codex plugin add aegis@aegisharness-marketplace
 ```
 
 **Claude Code**
 
 ```bash
-claude plugin marketplace add https://github.com/elierncn/aegisharness.git
+claude plugin marketplace add https://github.com/eliterncn/aegisharness.git
 claude plugin install aegis@aegisharness-marketplace
 ```
 
@@ -677,7 +677,7 @@ Project code is licensed under [Apache-2.0](../LICENSE). Third-party components 
 
 ## Feedback
 
-For community bugs use [GitHub Issues](https://github.com/elierncn/aegisharness/issues). The optional skill below has **no default platform destination** and cannot send until one is configured.
+For community bugs use [GitHub Issues](https://github.com/eliterncn/aegisharness/issues). The optional skill below has **no default platform destination** and cannot send until one is configured.
 
 The [auxiliary feedback skill](../aegisharness/skills/feedback/SKILL.md) submits AegisHarness usage issues independently of workflow commands and telemetry consent. Users can explicitly approve feedback while telemetry is disabled; enabling telemetry does not send feedback automatically.
 

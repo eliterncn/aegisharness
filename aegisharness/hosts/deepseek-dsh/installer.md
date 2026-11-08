@@ -39,7 +39,7 @@ dsh plugin --profile web remove @eliterncn/aegisharness-dsh
 包尚未发布到 npm 时，用本地路径做同样的原生安装（开发者模式）：
 
 ```bash
-git clone https://github.com/elierncn/aegisharness.git "$HOME/aegisharness"
+git clone https://github.com/eliterncn/aegisharness.git "$HOME/aegisharness"
 dsh plugin --profile web add "file:$HOME/aegisharness/aegisharness"
 ```
 
@@ -53,7 +53,7 @@ DSH 也会扫描 `<repo>/.dsh/skills/`、`${DSH_HOME:-~/.dsh}/skills/`、`~/.age
 下的 `<name>/SKILL.md`，并读取项目根 `AGENTS.md`。把九个薄入口挂到这些目录即可：
 
 ```bash
-export AEGISHARNESS_SOURCE="https://github.com/elierncn/aegisharness.git"
+export AEGISHARNESS_SOURCE="https://github.com/eliterncn/aegisharness.git"
 git clone "$AEGISHARNESS_SOURCE" "$HOME/aegisharness"
 
 DSH_SKILLS="${DSH_HOME:-$HOME/.dsh}/skills"

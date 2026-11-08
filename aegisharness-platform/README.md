@@ -108,4 +108,4 @@ report 与 feedback 使用同一配置方式：发布方在 AegisHarness 的 `sc
 
 ## 开源与贡献
 
-项目使用 [Apache-2.0](LICENSE)。完整配置见[使用指南](../docs/user-guide.zh-CN.md)，贡献规则见[贡献指南](../CONTRIBUTING.md)。[安全政策](../SECURITY.md)和[社区行为准则](../CODE_OF_CONDUCT.md)在仓库根目录统一维护。普通社区问题通过 [GitHub Issues](https://github.com/elierncn/aegisharness/issues) 提交。反馈 skill 默认没有平台地址，未配置时保留入口但不能发送。
+项目使用 [Apache-2.0](LICENSE)。完整配置见[使用指南](../docs/user-guide.zh-CN.md)，贡献规则见[贡献指南](../CONTRIBUTING.md)。[安全政策](../SECURITY.md)和[社区行为准则](../CODE_OF_CONDUCT.md)在仓库根目录统一维护。普通社区问题通过 [GitHub Issues](https://github.com/eliterncn/aegisharness/issues) 提交。反馈 skill 默认没有平台地址，未配置时保留入口但不能发送。

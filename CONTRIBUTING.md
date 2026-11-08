@@ -4,7 +4,7 @@ Bug reports, documentation improvements, tests and focused pull requests are wel
 
 ## Discuss and propose
 
-Use [GitHub Issues](https://github.com/elierncn/aegisharness/issues) for reproducible bugs and feature proposals. You do not need to deploy aegisharness-platform to report an issue. Security issues follow [SECURITY.md](SECURITY.md).
+Use [GitHub Issues](https://github.com/eliterncn/aegisharness/issues) for reproducible bugs and feature proposals. You do not need to deploy aegisharness-platform to report an issue. Security issues follow [SECURITY.md](SECURITY.md).
 
 Before a substantial behavior change, describe the problem, acceptance criteria and compatibility impact in an Issue. Work on a branch in your fork and open a PR against the repository's default branch. Keep each PR focused and include the verification commands and results. Maintainers review before merging; no CLA or DCO bot is configured in this source tree.
 

@@ -6,7 +6,7 @@
 
 Python 3.10+, Git and one of the supported hosts with a plugin marketplace or native skill discovery are required. DeepSeek Harness additionally needs Node.js 22.19+ (or 24+) and npm. See the [host support matrix](host-support-matrix.md). Make sure the host is signed in or has its model configuration set up and is working normally. The platform is optional.
 
-The examples use Bash/Zsh against the public repository `github.com/elierncn/aegisharness`. To test local changes or modify the plugin, use [developer installation](#developer-installation).
+The examples use Bash/Zsh against the public repository `github.com/eliterncn/aegisharness`. To test local changes or modify the plugin, use [developer installation](#developer-installation).
 
 This edition uses only the AegisHarness identifiers: `aegis@aegisharness-marketplace`, `/aegis:*`, `.aegisharness/`, `aegisharness.workspace.yaml`, and `AEGISHARNESS_*` environment variables. It does not recognize or migrate identifiers, configuration or runtime data from previous branding. Initialize a fresh application copy when validating this edition.
 
@@ -19,21 +19,21 @@ marketplace-based hosts need no manual source clone. Replace the repository URL 
 ### Codex
 
 ```bash
-codex plugin marketplace add https://github.com/elierncn/aegisharness.git
+codex plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codex plugin add aegis@aegisharness-marketplace
 ```
 
 ### Claude Code
 
 ```bash
-claude plugin marketplace add https://github.com/elierncn/aegisharness.git
+claude plugin marketplace add https://github.com/eliterncn/aegisharness.git
 claude plugin install aegis@aegisharness-marketplace
 ```
 
 ### MiniMax Code (preview)
 
 ```bash
-mcode plugin marketplace add https://github.com/elierncn/aegisharness.git
+mcode plugin marketplace add https://github.com/eliterncn/aegisharness.git
 mcode plugin install aegis@aegisharness-marketplace
 ```
 
@@ -43,7 +43,7 @@ Commands are Skill projections in `hosts/minimax/skills/`. MiniMax Code also dis
 ### WorkBuddy / CodeBuddy (preview)
 
 ```bash
-codebuddy plugin marketplace add https://github.com/elierncn/aegisharness.git
+codebuddy plugin marketplace add https://github.com/eliterncn/aegisharness.git
 codebuddy plugin install aegis@aegisharness-marketplace
 # Inside the host conversation, run /reload-plugins and open a new session.
 ```
@@ -53,7 +53,7 @@ Then open a new session and confirm the nine `/aegis:*` commands are visible.
 ### Qoder (preview)
 
 ```bash
-qodercli plugin marketplace add https://github.com/elierncn/aegisharness.git
+qodercli plugin marketplace add https://github.com/eliterncn/aegisharness.git
 qodercli plugin install aegis@aegisharness-marketplace
 ```
 
