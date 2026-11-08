@@ -123,13 +123,12 @@ python3 host_e2e.py --all
 - [ ] 真实产品会话内的模型执行抽样（minimax / workbuddy / qoder / deepseek-dsh）：
       需在装了对应产品并完成登录的机器上跑一遍 `/aegis:init` → `propose` → `apply` → `archive`，
       然后 `python3 scripts/host_e2e.py --host <id> --record --promote` 升为 `stable`。
-- [ ] 发布 npm 包。两条路径任选：
-      ① 本机 `cd aegisharness && npm publish --access public --otp=<验证码>`
-      （账号开了 2FA，交互发布必须带一次性验证码）；
-      ② 推 `v*` tag，由 `.github/workflows/publish-npm.yml` 自动发布：首版用仓库 Secret
-      `NPM_TOKEN`（需勾 `Bypass 2FA`），发成功后配 Trusted Publisher 切到 OIDC 并删掉 Secret。
-      **当前状态**：本机 `~/.npmrc` 里的 40 字符 legacy token 已被 npm 全面下线（`whoami` 401）；
-      新账号 `elitern` 的 granular token 权限正常但**未勾 `Bypass 2FA`**，`npm publish` 报 `EOTP`。
+- [x] 发布 npm 包 —— 已发布 `@eliterncn/aegisharness-dsh`，`latest` 为 **1.0.1**（342 文件 / 724.8 kB），
+      详见第 7 节「发布与后续」。
+- [ ] 配 Trusted Publisher 把 CI 发布切到 OIDC —— 包已存在，可以登记了：
+      https://www.npmjs.com/package/@eliterncn/aegisharness-dsh → Settings → Trusted Publisher，
+      填 `eliterncn` / `aegisharness` / `publish-npm.yml`，Allowed actions 勾 **npm publish**。
+      登记后推 `v*` tag 即可发版，不再需要 `NPM_TOKEN` Secret。
 
 ## 5. 日常使用
 
@@ -200,20 +199,33 @@ dsh plugin --profile web remove @eliterncn/aegisharness-dsh
 
 ### 发布与后续
 
-`npm publish` 需要有效的 npm 凭据。当前机器上的 `~/.npmrc` 只有一个 40 字符的 legacy token，
-用它对 `registry.npmjs.org` 调 `GET /-/whoami` 返回 **401**，因此本仓库无法自动发布。
-包名 `@eliterncn/aegisharness-dsh` 在公共 registry 上仍为 **404（未被占用）**，可用。
+**已发布到公共 registry。**
 
-手动发布（一次性）：
+| 版本 | 说明 |
+| --- | --- |
+| `1.0.0` | 首个版本。元数据里的 `repository` / `bugs` 仍指向旧组织 `elierncn`（改名之前打的包）。 |
+| `1.0.1` | 仓库迁到 `eliterncn` 后重发，链接全部修正。**当前 `latest`。** |
 
-```bash
-cd aegisharness/aegisharness
-npm login              # 或 npm config set //registry.npmjs.org/:_authToken=<新 token>
-npm whoami             # 必须打印出你的用户名
-npm publish --access public
-```
+- 包名：`@eliterncn/aegisharness-dsh`；npm 组织 `eliterncn`，发布账号 `elitern`。
+- 注意：`@elierncn` 这个 scope 在 npm 上**不存在**，npm 与 GitHub 的组织名都是 `eliterncn`。
+- 安装：`dsh plugin --profile web add @eliterncn/aegisharness-dsh`
+- 产物校验：从 registry 下载的 tarball 内含 `lib/index.js`、`cordis.patch.yml` 与
+  九个 `hosts/deepseek-dsh/skills/aegis-*/SKILL.md`；在该产物上直接跑
+  `node tests/dsh-plugin.test.mjs` 输出 `dsh plugin smoke test OK: 9 skills`。
 
-`--access public` 对 scoped 包是必需的，否则默认按私有包发布（需要付费槽位）。
+#### 发布环节踩过的坑（备查）
+
+| 现象 | 原因 | 处理 |
+| --- | --- | --- |
+| `EOTP This operation requires a one-time password` | granular token 创建时**未勾** `Bypass two-factor authentication` | 该选项事后不可修改，只能重新生成 token |
+| 发布"成功"但 registry 只有 `0.0.0-stage` 占位包 | token 的 Permissions 选成了 `Read and write (stage only)` | 必须选 **`Read and write (publish and stage)`**，注意结尾文案 |
+| `E404 ... Scope not found` | 目标 scope 不存在，或 token 的 Packages 白名单不含该 scope | 先在 npm 建组织；Packages 选 `All Packages` |
+| `E403 cannot publish over the previously published versions` | 该版本号已被占用（含暂存） | 升版本号重发 |
+| bypass-2FA token `unpublish` 报 403 | npm 从 2026-08 起把账号治理类操作排除在 2FA 绕过之外 | 撤销版本只能走 npm 网页 |
+| `npm view` 立刻查询读不到新版本 | registry 索引有 1–2 分钟延迟 | 轮询等待再校验 |
+
+`--access public` 对 scoped 包是必需的，否则默认按私有包发布（需要付费槽位）；本仓库已在
+`package.json` 的 `publishConfig.access` 写死为 `public`。
 
 ### 用 GitHub Actions 发布（推荐，本机不必登录 npm）
 

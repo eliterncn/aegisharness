@@ -124,7 +124,7 @@ dsh --profile web --dump-config | grep -A1 aegisharness
 dsh web
 ```
 
-> `@eliterncn/aegisharness-dsh` is not on npm yet. Before the first publish, replace step 2 with the `file:` local install: `dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`.
+> Published to the public registry as `@eliterncn/aegisharness-dsh` (current `latest` is `1.0.1`). To install from a local checkout instead, replace step 2 with the `file:` form: `dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`.
 
 Inside DSH, `/aegis:init` is triggered as `/aegis-init` because Skill names are kebab-case. See the [dsh installer](aegisharness/hosts/deepseek-dsh/installer.md) for the `file:` developer install, the skills-directory fallback and the full command mapping.
 
