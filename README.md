@@ -65,7 +65,7 @@ Knowledge accumulates as **reviewable repository documents**. You control what b
 
 Requirements: Python 3.10+, Git and a plugin-capable supported host (see the [host support matrix](docs/host-support-matrix.md)). Make sure the host is signed in or has its model configuration set up and is working normally. DeepSeek Harness additionally needs Node.js 22.19+ (or 24+) and npm.
 
-After the repository is public, **pick the block for your host** — each block is a complete, copy-pasteable install script. For pre-publication testing, replace the repository URL with a local checkout path; see [developer installation](docs/installation.md#developer-installation).
+**Pick the block for your host** — each block is a complete, copy-pasteable install script against the public repository. To test local changes, replace the repository URL with a local checkout path; see [developer installation](docs/installation.md#developer-installation).
 
 **Codex**
 
@@ -245,7 +245,7 @@ For version evaluation, point the platform at the source Git checkout or a direc
 
 Telemetry is off until the user explicitly enables it. Async reporting and the optional feedback skill have **no default platform address**. Without a configured destination, feedback cannot be sent; the entrypoint remains available. Configuring an endpoint does not authorize sending feedback: the content and destination still require approval.
 
-Report community bugs through [GitHub Issues](https://github.com/elierncn/aegisharness/issues) after publication; no platform deployment is required. Follow [SECURITY.md](SECURITY.md) for vulnerabilities. [Data and feedback details](docs/user-guide.md#feedback).
+Report community bugs through [GitHub Issues](https://github.com/elierncn/aegisharness/issues); no platform deployment is required. Follow [SECURITY.md](SECURITY.md) for vulnerabilities. [Data and feedback details](docs/user-guide.md#feedback).
 
 ## Roadmap
 

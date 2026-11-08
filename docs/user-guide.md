@@ -58,7 +58,7 @@ The terminal examples below use Bash / Zsh. GitHub plugin installation does not 
 
 ### 1. Install the Plugin
 
-After the repository is public, run the commands for your coding agent in a terminal. For testing before publication or modifying the plugin, use [developer installation from local source](installation.md#developer-installation).
+Run the commands for your coding agent in a terminal. For testing local changes or modifying the plugin, use [developer installation from local source](installation.md#developer-installation).
 
 **Codex**
 
@@ -677,7 +677,7 @@ Project code is licensed under [Apache-2.0](../LICENSE). Third-party components 
 
 ## Feedback
 
-For community bugs use [GitHub Issues](https://github.com/elierncn/aegisharness/issues) after publication. The optional skill below has **no default platform destination** and cannot send until one is configured.
+For community bugs use [GitHub Issues](https://github.com/elierncn/aegisharness/issues). The optional skill below has **no default platform destination** and cannot send until one is configured.
 
 The [auxiliary feedback skill](../aegisharness/skills/feedback/SKILL.md) submits AegisHarness usage issues independently of workflow commands and telemetry consent. Users can explicitly approve feedback while telemetry is disabled; enabling telemetry does not send feedback automatically.
 

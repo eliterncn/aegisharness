@@ -100,4 +100,4 @@ python3 scripts/host_runtime_cli.py resolve --platform qoder   # 解析指定宿
 
 ## 开源与贡献
 
-项目使用 [Apache-2.0](LICENSE)。单仓发布的根目录提供市场入口；独立插件副本仍支持本目录安装。详见[安装指南](../docs/installation.md)与[贡献指南](../CONTRIBUTING.md)。[安全政策](../SECURITY.md)和[社区行为准则](../CODE_OF_CONDUCT.md)在仓库根目录统一维护。普通社区问题在公开发布后通过 [GitHub Issues](https://github.com/elierncn/aegisharness/issues) 提交；未配置平台地址时，反馈 skill 仅保留入口，不能发送。
+项目使用 [Apache-2.0](LICENSE)。单仓发布的根目录提供市场入口；独立插件副本仍支持本目录安装。详见[安装指南](../docs/installation.md)与[贡献指南](../CONTRIBUTING.md)。[安全政策](../SECURITY.md)和[社区行为准则](../CODE_OF_CONDUCT.md)在仓库根目录统一维护。普通社区问题通过 [GitHub Issues](https://github.com/elierncn/aegisharness/issues) 提交；未配置平台地址时，反馈 skill 仅保留入口，不能发送。

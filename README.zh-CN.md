@@ -65,7 +65,7 @@ Knowledge 与 Harness 通过索引引导上下文加载，Specs 保存每个需�
 
 需要 Python 3.10+、Git，以及支持插件市场或原生 Skill 发现的受支持宿主之一（见[宿主支持矩阵](docs/host-support-matrix.md)）。先确保宿主已完成登录或模型配置，能够正常使用；DeepSeek Harness 另需 Node.js 22.19+（或 24+）与 npm。
 
-仓库公开后，**按自己使用的宿主选择对应代码块**，每一段都是可直接复制执行的完整安装脚本。发布前测试请把仓库地址换成本地 checkout 路径，见[开发者安装（本地源码）](docs/installation.md#developer-installation)。
+**按自己使用的宿主选择对应代码块**，每一段都是针对公开仓库、可直接复制执行的完整安装脚本。想测试本地改动时，把仓库地址换成本地 checkout 路径，见[开发者安装（本地源码）](docs/installation.md#developer-installation)。
 
 **Codex**
 
@@ -243,7 +243,7 @@ python -m web_ui.demo --port 7860
 
 统计需要用户明确开启。异步上报和可选反馈功能**默认没有平台地址**；未配置目的地时保留入口，但不能发送反馈。配置地址不等于同意发送，每次反馈内容和实际目的地仍需授权。
 
-公开发布后，普通社区问题直接提交到 [GitHub Issues](https://github.com/elierncn/aegisharness/issues)，不需要先部署平台。漏洞按[安全政策](SECURITY.md)私密报告。详见[数据与反馈说明](docs/user-guide.zh-CN.md#问题反馈)。
+普通社区问题直接提交到 [GitHub Issues](https://github.com/elierncn/aegisharness/issues)，不需要先部署平台。漏洞按[安全政策](SECURITY.md)私密报告。详见[数据与反馈说明](docs/user-guide.zh-CN.md#问题反馈)。
 
 ## 路线图
 

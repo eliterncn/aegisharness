@@ -6,7 +6,7 @@
 
 Python 3.10+, Git and one of the supported hosts with a plugin marketplace or native skill discovery are required. DeepSeek Harness additionally needs Node.js 22.19+ (or 24+) and npm. See the [host support matrix](host-support-matrix.md). Make sure the host is signed in or has its model configuration set up and is working normally. The platform is optional.
 
-The examples use Bash/Zsh. `elierncn/aegisharness` is the planned public repository; remote commands become usable after its publication. For testing before publication or modifying the plugin, use [developer installation](#developer-installation).
+The examples use Bash/Zsh against the public repository `github.com/elierncn/aegisharness`. To test local changes or modify the plugin, use [developer installation](#developer-installation).
 
 This edition uses only the AegisHarness identifiers: `aegis@aegisharness-marketplace`, `/aegis:*`, `.aegisharness/`, `aegisharness.workspace.yaml`, and `AEGISHARNESS_*` environment variables. It does not recognize or migrate identifiers, configuration or runtime data from previous branding. Initialize a fresh application copy when validating this edition.
 
@@ -123,7 +123,7 @@ Sources: [OpenAI plugin packaging](https://developers.openai.com/plugins/build/p
 
 ## Developer installation
 
-Use local source when developing the plugin or testing before publication. Download or clone the source, then run the following from the combined repository root containing both `aegisharness/` and `aegisharness-platform/`:
+Use local source when developing the plugin or testing local changes. Download or clone the source, then run the following from the combined repository root containing both `aegisharness/` and `aegisharness-platform/`:
 
 ```bash
 export AEGISHARNESS_SOURCE="$(pwd)"
@@ -200,7 +200,7 @@ Use the host's plugin management to uninstall `aegis@aegisharness-marketplace`. 
 
 需要 Python 3.10+、Git，以及支持插件市场的受支持宿主之一（见[宿主支持矩阵](host-support-matrix.md)）。先确保宿主已完成登录或模型配置，能够正常使用。平台不是安装插件的前置条件。
 
-正式发布后使用上面的 GitHub 安装命令，无需先手动克隆源码。发布前测试或修改插件时，使用[开发者安装（本地源码）](#developer-installation)：先下载或克隆源码，再从**包含两个子项目的根目录**添加本地市场。根市场指向 `./aegisharness`，不会安装平台。独立插件副本仍可添加插件目录本身；同名市场只保留一个来源。
+直接使用上面的 GitHub 安装命令即可，无需先手动克隆源码。测试本地改动或修改插件时，使用[开发者安装（本地源码）](#developer-installation)：先下载或克隆源码，再从**包含两个子项目的根目录**添加本地市场。根市场指向 `./aegisharness`，不会安装平台。独立插件副本仍可添加插件目录本身；同名市场只保留一个来源。
 
 安装后新开会话，确认九个命令可见、插件 hooks 已审阅并实际执行，再在业务仓库运行 `/aegis:init` 并检查项目 hooks。单仓 Init 还需检查非空的 `docs/harness/index.md`、`docs/knowledge/index.md`、`docs/knowledge/project-context.md` 及对应项目类型要求的其他产物，不能只看“已完成”回复。若出现 `plugin_source_mismatch`，先核对市场来源与当前安装插件，选定正确来源并新开会话，避免混用其他 checkout 或缓存版本。更新使用 `/aegis:update`；本地来源需先自行更新源码，不能把版本识别成功当作已完成跨版本升级。
 

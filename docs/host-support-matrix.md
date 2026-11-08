@@ -94,7 +94,7 @@ export AEGISHARNESS_PLATFORM=workbuddy
 | DeepSeek Harness / dsh | `npm install -g @deepseek-ai/dsh` → 软链 `hosts/deepseek-dsh/skills/aegis-*` 到 `${DSH_HOME:-~/.dsh}/skills/` → `dsh --profile web --dump-config` → 重启新开会话 |
 
 `$AEGISHARNESS_SOURCE` 为包含 `aegisharness/` 与 `aegisharness-platform/` 的仓库根目录；
-公开发布后可用 `https://github.com/elierncn/aegisharness.git`。各宿主细节见
+公开仓库地址为 `https://github.com/elierncn/aegisharness.git`。各宿主细节见
 `aegisharness/hosts/{host-id}/installer.md`。
 
 ---

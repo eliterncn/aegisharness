@@ -1,6 +1,6 @@
 # 安装与更新
 
-完整步骤见[安装指南](../../../docs/installation.md)。当前单仓源码使用仓库根目录的绝对路径；独立插件副本可使用插件目录。公开发布后也可使用 `https://github.com/elierncn/aegisharness.git`，记为 `AEGISHARNESS_SOURCE`。
+完整步骤见[安装指南](../../../docs/installation.md)。当前单仓源码使用仓库根目录的绝对路径；独立插件副本可使用插件目录。也可直接使用 `https://github.com/elierncn/aegisharness.git`，记为 `AEGISHARNESS_SOURCE`。
 
 ```bash
 codex plugin marketplace add "$AEGISHARNESS_SOURCE"

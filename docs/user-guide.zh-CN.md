@@ -59,7 +59,7 @@ Propose → Apply → Archive
 
 ### 1. 安装 AegisHarness 插件
 
-仓库公开后，在终端选择使用的宿主，只执行对应的一组命令。发布前测试或修改插件时，使用[开发者安装（本地源码）](installation.md#developer-installation)。
+在终端选择使用的宿主，只执行对应的一组命令。测试本地改动或修改插件时，使用[开发者安装（本地源码）](installation.md#developer-installation)。
 
 **Codex**
 
@@ -678,7 +678,7 @@ python -m ruff check web_ui eval bench evolution tests
 
 ## 问题反馈
 
-公开发布后普通社区问题直接走 [GitHub Issues](https://github.com/elierncn/aegisharness/issues)。以下可选反馈功能默认没有平台地址；未配置目的地时保留入口，但不能发送。
+普通社区问题直接走 [GitHub Issues](https://github.com/elierncn/aegisharness/issues)。以下可选反馈功能默认没有平台地址；未配置目的地时保留入口，但不能发送。
 
 [feedback 辅助 Skill](../aegisharness/skills/feedback/SKILL.md) 用于提交 AegisHarness 自身的使用问题，独立于研发命令及统计授权：统计关闭时仍可由用户明确确认发送 feedback；开启统计不会自动发送反馈。
 

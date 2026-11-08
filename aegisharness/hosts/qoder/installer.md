@@ -2,7 +2,7 @@
 
 需要 Python 3.10+、Git 与支持插件市场的 Qoder。完整步骤见
 [安装指南](../../../docs/installation.md)。将仓库根目录记为 `AEGISHARNESS_SOURCE`；
-公开发布后也可使用 `https://github.com/elierncn/aegisharness.git`。
+也可直接使用 `https://github.com/elierncn/aegisharness.git`。
 
 ```bash
 # 本地源码安装（Qoder）
