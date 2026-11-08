@@ -47,6 +47,26 @@ BRAND_RESIDUE = re.compile(r"HelixHarness|helixharness|HELIXHARNESS|/helix:|heli
 SKIP_SUFFIXES = frozenset(
     {".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".gz", ".zip", ".pyc", ".woff", ".woff2", ".ttf"}
 )
+# VCS metadata, dependency trees and build output are not reviewed source.
+# Git commit messages legitimately carry upstream attribution, so .git must be
+# excluded or the branding check would flag its own history.
+SKIP_DIRS = frozenset(
+    {
+        ".git", ".hg", ".svn", "node_modules", ".venv", "venv",
+        "__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache",
+        "dist", "build", ".cache",
+    }
+)
+
+
+def repo_files(pattern: str = "*"):
+    """Yield repository files, skipping VCS and build/dependency trees."""
+    for path in sorted(REPO_ROOT.rglob(pattern)):
+        if not path.is_file():
+            continue
+        if any(part in SKIP_DIRS for part in path.relative_to(REPO_ROOT).parts[:-1]):
+            continue
+        yield path
 
 
 def check(label: str, errors: list[str], fn) -> None:
@@ -60,7 +80,7 @@ def check(label: str, errors: list[str], fn) -> None:
 
 def json_files() -> None:
     bad = []
-    for path in sorted(REPO_ROOT.rglob("*.json")):
+    for path in repo_files("*.json"):
         try:
             json.loads(path.read_text(encoding="utf-8"))
         except (ValueError, UnicodeDecodeError) as exc:
@@ -71,7 +91,7 @@ def json_files() -> None:
 
 def python_syntax() -> None:
     bad = []
-    for path in sorted(REPO_ROOT.rglob("*.py")):
+    for path in repo_files("*.py"):
         try:
             compile(path.read_text(encoding="utf-8"), str(path), "exec")
         except (SyntaxError, UnicodeDecodeError) as exc:
@@ -124,8 +144,8 @@ def distribution_manifests() -> None:
 
 def branding_residue() -> None:
     hits = []
-    for path in sorted(REPO_ROOT.rglob("*")):
-        if not path.is_file() or path.suffix.lower() in SKIP_SUFFIXES:
+    for path in repo_files():
+        if path.suffix.lower() in SKIP_SUFFIXES:
             continue
         if path.name in ATTRIBUTION_FILES or path.name == "check_release.py":
             # This script necessarily contains the patterns it scans for.

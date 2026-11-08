@@ -136,10 +136,10 @@ python3 "{plugin_root}/scripts/feedback_submit.py" send --draft "{draft_path}" -
 
 **平台拒绝（`status: "rejected"`）**：尚未送达，保留草稿并报告原因，不改写内容重发。用户要求重试时可执行 `feedback_submit.py retry --confirmed`，仅补投已确认且与当前配置地址一致的待发记录。
 
-## 双宿主说明
+## 宿主差异说明
 
-- 已启用反馈能力的宿主使用同一 CLI（`feedback_submit.py`），反馈流程本身无 hook 参与、无 consent 流程
-- 会话上下文采集当前仅支持 claude-code 会话；Codex 宿主仍可上报反馈元数据（`transcript_stats.supported=false`），不是错误
+- 六个宿主使用同一 CLI（`feedback_submit.py`），反馈流程本身无 hook 参与、无 consent 流程
+- 会话上下文采集当前仅支持 claude-code 会话；Codex、MiniMax、WorkBuddy、Qoder、DeepSeek Harness 宿主仍可上报反馈元数据（`transcript_stats.supported=false`），不是错误
 - 未注册宿主（`{current_platform}` 无法给出 canonical ID 时）：`--platform unknown` 仍可上报，文档中 `host` 记为 `unknown`
 
 ## 注意事项

@@ -1,6 +1,6 @@
 {
   "name": "aegis",
-  "description": "AegisHarness 面向 Agent 的双宿主研发工作流插件，提供命令与可复用技能。",
+  "description": "AegisHarness 面向六宿主的研发工作流插件，提供九个 /aegis:* 命令与可复用技能。",
   "author": {
     "name": "AegisHarness contributors"
   },
