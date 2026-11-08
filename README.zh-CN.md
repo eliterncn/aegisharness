@@ -124,6 +124,8 @@ dsh --profile web --dump-config | grep -A1 aegisharness
 dsh web
 ```
 
+> `@elierncn/aegisharness-dsh` 尚未在 npm 公开发布。首次发布前，把上面第 2 步换成 `file:` 本地路径安装：`dsh plugin --profile web add "file:/abs/path/to/aegisharness/aegisharness"`。
+
 DSH 的 Skill 名只接受 kebab-case，因此 `/aegis:init` 在本宿主以 `/aegis-init` 触发。`file:` 开发者安装、skills 目录兜底方案与完整命令映射见 [dsh 安装说明](aegisharness/hosts/deepseek-dsh/installer.md)。
 
 **无论哪个宿主**，若同一终端存在多个宿主的运行时标记，请显式绑定 Host Context：
