@@ -69,22 +69,45 @@ Then open a new session and confirm the nine `/aegis:*` commands are visible.
 
 ### Qoder (preview)
 
-```bash
-qodercli plugins marketplace add https://github.com/eliterncn/aegisharness.git
-qodercli plugins install aegis@aegisharness-marketplace
+Two independent entry points. **Only the CLI can add a marketplace source** — the desktop
+plugin panel has no "add marketplace" field; it lists the official market and offers local
+plugin import.
+
+Option A — desktop import (no terminal needed):
+
+Settings → Plugins → the Custom section → Import. The international build imports a **local
+folder**, Qoder CN imports a **ZIP**. Point it at the plugin root, i.e. the directory holding
+`.qoder-plugin/plugin.json`:
+
+```
+/abs/path/to/aegisharness/aegisharness
 ```
 
-`plugins` may be abbreviated as `plugin`. Marketplace sources also accept `owner/repo`
-shorthand, a local directory, or a URL pointing at a `marketplace.json`.
-Qoder resolves a marketplace manifest in this order: `.qoder-plugin/marketplace.json`,
-then `.claude-plugin/marketplace.json`, then `marketplace.json` — this repository ships the
-second one, whose only entry resolves to the `aegisharness/` plugin directory.
+Not the repository root — that layer has no `commands/`, `skills/`, or `agents/`, so the
+imported plugin would be empty. Choose User or Project scope, confirm the plugin shows as
+enabled, then start a new session.
 
-Desktop client: open the plugin marketplace, add `eliterncn/aegisharness` as a source, install
-`aegis`. Without a marketplace you can install a local directory instead:
+Option B — CLI, which can follow marketplace updates:
 
 ```bash
-qodercli plugins install /abs/path/to/aegisharness/aegisharness   # id becomes aegis@local
+npm i -g @qoder-ai/qodercli
+qoder plugins marketplace add eliterncn/aegisharness
+qoder plugins install aegis@aegisharness-marketplace
+```
+
+The binary is `qoder` (docs and samples also write `qodercli`); the subcommand group is
+`plugins`, with `plugin` as an alias. `marketplace add` also accepts a git URL, a local
+directory, or a URL pointing at a `marketplace.json`. Qoder resolves a marketplace manifest in
+this order: `.qoder-plugin/marketplace.json`, then `.claude-plugin/marketplace.json`, then
+`marketplace.json` — this repository ships the second one, whose only entry resolves to the
+`aegisharness/` plugin directory.
+
+Without a marketplace you can install a local directory directly (id becomes `aegis@local`),
+and validate it first during development:
+
+```bash
+qoder plugins validate /abs/path/to/aegisharness/aegisharness
+qoder plugins install /abs/path/to/aegisharness/aegisharness --scope project
 ```
 
 Restart the CLI or run `/plugins reload` afterwards, then confirm the nine commands and the
