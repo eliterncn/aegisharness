@@ -32,13 +32,30 @@ claude plugin install aegis@aegisharness-marketplace
 
 ### MiniMax Code (preview)
 
+Three paths, all installing the same plugin directory. Marketplace support is rolling out,
+so B and C are the reliable ones.
+
 ```bash
-mcode plugin marketplace add https://github.com/eliterncn/aegisharness.git
-mcode plugin install aegis@aegisharness-marketplace
+# A. desktop: Plugins -> Add marketplace -> eliterncn/aegisharness, then install aegis
+# B. local plugin directory (recommended)
+mcode plugin marketplace list          # prints the local plugin directory
+cp -R aegisharness "<that directory>/" # copy the whole plugin dir, not its subdirs
+#    then open /plugins inside MiniMax Code, Ctrl+R to refresh, Space to enable
 ```
 
-Commands are Skill projections in `hosts/minimax/skills/`. MiniMax Code also discovers
-`~/.agents/skills/`, `~/.claude/skills/` and `~/.codex/skills/`.
+```bash
+# C. skills only, via native discovery (~/.agents/skills, also reads ~/.claude/skills, ~/.codex/skills)
+mkdir -p ~/.agents/skills
+ln -sfn "$PWD/aegisharness/hosts/minimax/skills/init" ~/.agents/skills/aegis-init
+# repeat for apply archive bug-fix config propose status update ut
+```
+
+The nine `SKILL.md` files resolve the plugin root as `../../../..` relative to themselves
+and then read `commands/<cmd>.md`; copying only `hosts/minimax/skills/` breaks that lookup,
+so keep the plugin tree intact and link into it.
+
+`mcode plugin add` installs from the official catalog only — it does not accept a GitHub URL
+or a local path.
 
 ### WorkBuddy / CodeBuddy (preview)
 
@@ -53,12 +70,25 @@ Then open a new session and confirm the nine `/aegis:*` commands are visible.
 ### Qoder (preview)
 
 ```bash
-qodercli plugin marketplace add https://github.com/eliterncn/aegisharness.git
-qodercli plugin install aegis@aegisharness-marketplace
+qodercli plugins marketplace add https://github.com/eliterncn/aegisharness.git
+qodercli plugins install aegis@aegisharness-marketplace
 ```
 
-The desktop client can register the same repository through its plugin marketplace.
-After installation, confirm the nine commands and the `qoder.md` project instructions loaded.
+`plugins` may be abbreviated as `plugin`. Marketplace sources also accept `owner/repo`
+shorthand, a local directory, or a URL pointing at a `marketplace.json`.
+Qoder resolves a marketplace manifest in this order: `.qoder-plugin/marketplace.json`,
+then `.claude-plugin/marketplace.json`, then `marketplace.json` — this repository ships the
+second one, whose only entry resolves to the `aegisharness/` plugin directory.
+
+Desktop client: open the plugin marketplace, add `eliterncn/aegisharness` as a source, install
+`aegis`. Without a marketplace you can install a local directory instead:
+
+```bash
+qodercli plugins install /abs/path/to/aegisharness/aegisharness   # id becomes aegis@local
+```
+
+Restart the CLI or run `/plugins reload` afterwards, then confirm the nine commands and the
+`qoder.md` project instructions loaded.
 
 ### DeepSeek Harness / dsh (preview)
 
